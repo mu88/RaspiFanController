@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Logic
+namespace RaspiFanController.Logic
 {
-    public class TemperatureController
+    public class RaspiTemperatureController
     {
-        public TemperatureController(ITemperatureProvider temperatureProvider, int refreshInterval = 1000)
+        public RaspiTemperatureController(ITemperatureProvider temperatureProvider)
         {
             TemperatureProvider = temperatureProvider;
-            RefreshInterval = refreshInterval;
+            RefreshInterval = 1000;
         }
 
         public int RefreshInterval { get; }
@@ -27,17 +28,14 @@ namespace Logic
             throw new NotImplementedException();
         }
 
-        public void StartTemperatureMeasurement()
+        public async Task StartTemperatureMeasurementAsync(CancellationToken stoppingToken)
         {
-            Task.Run(async () =>
+            while (!stoppingToken.IsCancellationRequested)
             {
-                while (true)
-                {
-                    CurrentTemperature = TemperatureProvider.GetTemperature();
+                CurrentTemperature = TemperatureProvider.GetTemperature();
 
-                    await Task.Delay(RefreshInterval);
-                }
-            });
+                await Task.Delay(RefreshInterval, stoppingToken);
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Logic
+﻿namespace RaspiFanController.Logic
 {
     public interface ITemperatureProvider
     {

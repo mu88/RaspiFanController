@@ -1,10 +1,9 @@
-using Logic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using RaspiFanController.Logic;
 
 namespace RaspiFanController
 {
@@ -29,7 +28,8 @@ namespace RaspiFanController
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<TemperatureController>();
+            services.AddHostedService<Worker>();
+            services.AddSingleton<RaspiTemperatureController>();
 
             if (HostingEnvironment.IsDevelopment())
             {
@@ -37,7 +37,7 @@ namespace RaspiFanController
             }
             else
             {
-                services.AddSingleton<ITemperatureProvider, RealTemperatureProvider>();
+                services.AddSingleton<ITemperatureProvider, RaspiTemperatureProvider>();
             }
             
         }
@@ -65,8 +65,6 @@ namespace RaspiFanController
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-
-            app.ApplicationServices.GetService<TemperatureController>().StartTemperatureMeasurement();
         }
     }
 }

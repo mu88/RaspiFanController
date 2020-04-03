@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logic
+namespace RaspiFanController.Logic
 {
     public class RandomTemperatureProvider : ITemperatureProvider
     {

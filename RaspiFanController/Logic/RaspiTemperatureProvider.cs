@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Logic
+namespace RaspiFanController.Logic
 {
-    public class RealTemperatureProvider : ITemperatureProvider
+    public class RaspiTemperatureProvider : ITemperatureProvider
     {
         /// <inheritdoc />
         public double GetTemperature()

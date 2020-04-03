@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using Logic
-@inject TemperatureController TemperatureController
+@inject RaspiTemperatureController RaspiTemperatureController
 
 <h1>Hello, world!</h1>
 
@@ -25,10 +25,10 @@ Welcome to your new app.
     {
         while (true)
         {
-            Temperature = TemperatureController.CurrentTemperature;
+            Temperature = RaspiTemperatureController.CurrentTemperature;
             StateHasChanged();
 
-            await Task.Delay(TemperatureController.RefreshInterval);
+            await Task.Delay(RaspiTemperatureController.RefreshInterval);
         }
     }
 

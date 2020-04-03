@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspiFanController", "RaspiFanController\RaspiFanController.csproj", "{2695BB9A-81A2-48B6-9D08-B325D492E194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Logic\Logic.csproj", "{E5701D9B-490E-4D2B-A7F9-B0059AE51ECD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{04CFD6CC-5A58-43B2-8751-23ADB6CA1DF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{2695BB9A-81A2-48B6-9D08-B325D492E194}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2695BB9A-81A2-48B6-9D08-B325D492E194}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2695BB9A-81A2-48B6-9D08-B325D492E194}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5701D9B-490E-4D2B-A7F9-B0059AE51ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5701D9B-490E-4D2B-A7F9-B0059AE51ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5701D9B-490E-4D2B-A7F9-B0059AE51ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5701D9B-490E-4D2B-A7F9-B0059AE51ECD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04CFD6CC-5A58-43B2-8751-23ADB6CA1DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04CFD6CC-5A58-43B2-8751-23ADB6CA1DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04CFD6CC-5A58-43B2-8751-23ADB6CA1DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04CFD6CC-5A58-43B2-8751-23ADB6CA1DF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
