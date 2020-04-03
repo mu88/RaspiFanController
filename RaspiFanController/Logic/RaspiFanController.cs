@@ -1,20 +1,32 @@
-﻿namespace RaspiFanController.Logic
+﻿using System.Device.Gpio;
+
+namespace RaspiFanController.Logic
 {
     public class RaspiFanController : IFanController
     {
+        public RaspiFanController()
+        {
+            GpioController = new GpioController();
+            GpioPin = 17;
+        }
+
         /// <inheritdoc />
-        public bool IsFanRunning { get; }
+        public bool IsFanRunning => GpioController.Read(GpioPin) == PinValue.High;
+
+        private GpioController GpioController { get; }
+
+        private int GpioPin { get; }
 
         /// <inheritdoc />
         public void TurnFanOn()
         {
-            throw new System.NotImplementedException();
+            GpioController.Write(GpioPin, PinValue.High);
         }
 
         /// <inheritdoc />
         public void TurnFanOff()
         {
-            throw new System.NotImplementedException();
+            GpioController.Write(GpioPin, PinValue.Low);
         }
     }
 }

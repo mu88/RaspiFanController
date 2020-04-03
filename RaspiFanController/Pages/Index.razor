@@ -2,51 +2,61 @@
 @using RaspiFanController.Logic
 @inject RaspiTemperatureController RaspiTemperatureController
 
-<p>Current temperature: @Temperature°@Unit</p>
-<p>Temperature threshold: @TemperatureThreshold°@Unit</p>
-<p>Mode: @RegulationMode</p>
-<p>Fan is running: @FanIsRunning</p>
-
-<label>
-    <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Automatic)" value="Automatic" @onchange="ModeChanged"/> Automatic
-</label>
-<label>
-    <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Manual)" value="Manual" @onchange="ModeChanged"/> Manual
-</label>
-<br/>
-@if (AllowManualControl)
+@if (IsPlatformSupported)
 {
+    <p>Current temperature: @Temperature°@Unit</p>
+    <p>Temperature threshold: @TemperatureThreshold°@Unit</p>
+    <p>Mode: @RegulationMode</p>
+    <p>Fan is running: @FanIsRunning</p>
+
     <label>
-        <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged"/> True
+        <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Automatic)" value="Automatic" @onchange="ModeChanged"/> Automatic
     </label>
     <label>
-        <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged"/> False
+        <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Manual)" value="Manual" @onchange="ModeChanged"/> Manual
     </label>
+    <br/>
+    @if (AllowManualControl)
+    {
+        <label>
+            <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged"/> True
+        </label>
+        <label>
+            <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged"/> False
+        </label>
+    }
+    else
+    {
+        <label>
+            <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged" disabled/> True
+        </label>
+        <label>
+            <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged" disabled/> False
+        </label>
+    }
+    <br/>
+    <label>
+        Temperature Threshold:
+        <input type="number" id="threshold" name="threshold" @onchange="TemperatureThresholdChanged">
+    </label>
+
+    @if (HasError)
+    {
+        <p>Error message: @ErrorMessage</p>
+    }
 }
 else
 {
-    <label>
-        <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged" disabled/> True
-    </label>
-    <label>
-        <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged" disabled/> False
-    </label>
+    <p>Sorry, your OS platform is not supported.</p>
 }
-<br/>
-<label>
-    Temperature Threshold: 
-    <input type="number" id="threshold" name="threshold" @onchange="TemperatureThresholdChanged">
-</label>
 
-@if (HasError)
-{
-    <p>Error message: @ErrorMessage</p>
-}
 
 
 @code {
 
     private RegulationMode RegulationMode { get; set; }
+
+    private bool IsPlatformSupported { get; set; }
 
     private bool FanIsRunning { get; set; }
 
@@ -68,6 +78,7 @@ else
         base.OnInitialized();
 
         AllowManualControl = RaspiTemperatureController.RegulationMode == RegulationMode.Manual;
+        IsPlatformSupported = RaspiTemperatureController.IsPlatformSupported;
 
         StartPollingAsync();
     }

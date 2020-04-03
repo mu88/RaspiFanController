@@ -7,9 +7,13 @@ namespace RaspiFanController.Logic
         /// <inheritdoc />
         public (double, string) GetTemperature()
         {
-            var random = new Random();
-            var nextDouble = random.NextDouble();
-            return (30 + 30 * nextDouble, "C");
+            return (30 + 30 * new Random().NextDouble(), "C");
+        }
+
+        /// <inheritdoc />
+        public bool IsPlatformSupported()
+        {
+            return true;
         }
     }
 }

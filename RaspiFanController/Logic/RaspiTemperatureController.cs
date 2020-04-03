@@ -14,6 +14,8 @@ namespace RaspiFanController.Logic
             RegulationMode = RegulationMode.Automatic;
         }
 
+        public bool IsPlatformSupported => TemperatureProvider.IsPlatformSupported();
+
         public int RefreshInterval { get; }
 
         public bool IsFanRunning => FanController.IsFanRunning;
