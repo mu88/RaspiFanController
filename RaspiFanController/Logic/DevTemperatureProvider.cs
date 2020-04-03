@@ -2,14 +2,14 @@
 
 namespace RaspiFanController.Logic
 {
-    public class RandomTemperatureProvider : ITemperatureProvider
+    public class DevTemperatureProvider : ITemperatureProvider
     {
         /// <inheritdoc />
-        public double GetTemperature()
+        public (double, string) GetTemperature()
         {
             var random = new Random();
             var nextDouble = random.NextDouble();
-            return 30 + 30 * nextDouble;
+            return (30 + 30 * nextDouble, "C");
         }
     }
 }

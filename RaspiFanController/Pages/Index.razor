@@ -1,34 +1,130 @@
 ﻿@page "/"
-@using Logic
+@using RaspiFanController.Logic
 @inject RaspiTemperatureController RaspiTemperatureController
 
-<h1>Hello, world!</h1>
+<p>Current temperature: @Temperature°@Unit</p>
+<p>Temperature threshold: @TemperatureThreshold°@Unit</p>
+<p>Mode: @RegulationMode</p>
+<p>Fan is running: @FanIsRunning</p>
 
-Welcome to your new app.
+<label>
+    <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Automatic)" value="Automatic" @onchange="ModeChanged"/> Automatic
+</label>
+<label>
+    <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Manual)" value="Manual" @onchange="ModeChanged"/> Manual
+</label>
+<br/>
+@if (AllowManualControl)
+{
+    <label>
+        <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged"/> True
+    </label>
+    <label>
+        <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged"/> False
+    </label>
+}
+else
+{
+    <label>
+        <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged" disabled/> True
+    </label>
+    <label>
+        <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged" disabled/> False
+    </label>
+}
+<br/>
+<label>
+    Temperature Threshold: 
+    <input type="number" id="threshold" name="threshold" @onchange="TemperatureThresholdChanged">
+</label>
 
-<p>Current temperature: @Temperature</p>
+@if (HasError)
+{
+    <p>Error message: @ErrorMessage</p>
+}
 
 
 @code {
 
+    private RegulationMode RegulationMode { get; set; }
+
+    private bool FanIsRunning { get; set; }
+
+    private bool AllowManualControl { get; set; }
+
     private double Temperature { get; set; }
+
+    private double TemperatureThreshold { get; set; }
+
+    private string Unit { get; set; }
+
+    private bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+    private string ErrorMessage { get; set; }
 
     /// <inheritdoc />
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        Refresh();
+        AllowManualControl = RaspiTemperatureController.RegulationMode == RegulationMode.Manual;
+
+        StartPollingAsync();
     }
 
-    private async void Refresh()
+    private async void StartPollingAsync()
     {
         while (true)
         {
-            Temperature = RaspiTemperatureController.CurrentTemperature;
+            Temperature = Math.Round(RaspiTemperatureController.CurrentTemperature, 1);
+            TemperatureThreshold = Math.Round(RaspiTemperatureController.TemperatureThreshold, 1);
+            Unit = RaspiTemperatureController.Unit;
+            RegulationMode = RaspiTemperatureController.RegulationMode;
+            FanIsRunning = RaspiTemperatureController.IsFanRunning;
+
             StateHasChanged();
 
             await Task.Delay(RaspiTemperatureController.RefreshInterval);
+        }
+    }
+
+    private void ModeChanged(ChangeEventArgs changeEventArgs)
+    {
+        switch (changeEventArgs.Value)
+        {
+            case "Automatic":
+                RaspiTemperatureController.SetAutomaticTemperatureRegulation();
+                AllowManualControl = false;
+                break;
+            case "Manual":
+                AllowManualControl = true;
+                break;
+        }
+    }
+
+    private void TemperatureThresholdChanged(ChangeEventArgs changeEventArgs)
+    {
+        if (double.TryParse(changeEventArgs?.Value?.ToString(), out var result))
+        {
+            ErrorMessage = string.Empty;
+            RaspiTemperatureController.SetTemperatureThreshold(result);
+        }
+        else
+        {
+            ErrorMessage = "Please enter a valid number";
+        }
+    }
+
+    private void FanIsRunningChanged(ChangeEventArgs changeEventArgs)
+    {
+        if (bool.TryParse(changeEventArgs?.Value?.ToString(), out var result))
+        {
+            RaspiTemperatureController.SetManualTemperatureRegulation(result);
+        }
+        else
+        {
+    // Fallback to avoid overheating
+            RaspiTemperatureController.SetManualTemperatureRegulation(true);
         }
     }
 

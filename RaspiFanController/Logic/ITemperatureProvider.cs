@@ -2,6 +2,6 @@
 {
     public interface ITemperatureProvider
     {
-        double GetTemperature();
+        (double,string) GetTemperature();
     }
 }

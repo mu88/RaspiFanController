@@ -11,15 +11,15 @@ namespace RaspiFanController
     {
         public Startup(IWebHostEnvironment hostingEnvironment)
         {
-            Configuration = new ConfigurationBuilder()
-                            .SetBasePath(hostingEnvironment.ContentRootPath)
-                            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                            .Build();
+            Configuration = new ConfigurationBuilder().SetBasePath(hostingEnvironment.ContentRootPath)
+                                                      .AddJsonFile("appsettings.json", true, true)
+                                                      .Build();
 
             HostingEnvironment = hostingEnvironment;
         }
 
         public IConfigurationRoot Configuration { get; }
+
         public IWebHostEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -33,13 +33,14 @@ namespace RaspiFanController
 
             if (HostingEnvironment.IsDevelopment())
             {
-                services.AddSingleton<ITemperatureProvider, RandomTemperatureProvider>();
+                services.AddSingleton<ITemperatureProvider, DevTemperatureProvider>();
+                services.AddSingleton<IFanController, DevFanController>();
             }
             else
             {
                 services.AddSingleton<ITemperatureProvider, RaspiTemperatureProvider>();
+                services.AddSingleton<IFanController, Logic.RaspiFanController>();
             }
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
