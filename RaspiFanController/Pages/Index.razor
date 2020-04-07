@@ -2,61 +2,134 @@
 @using RaspiFanController.Logic
 @inject RaspiTemperatureController RaspiTemperatureController
 
-@if (IsPlatformSupported)
-{
-    <p>Current temperature: @Temperature°@Unit</p>
-    <p>Temperature threshold: @TemperatureThreshold°@Unit</p>
-    <p>Sleep time: @SleepTime s</p>
-    <p>Mode: @RegulationMode</p>
-    <p>Fan is running: @FanIsRunning</p>
-
-    <label>
-        <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Automatic)" value="Automatic" @onchange="ModeChanged"/> Automatic
-    </label>
-    <label>
-        <input type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Manual)" value="Manual" @onchange="ModeChanged"/> Manual
-    </label>
-    <br/>
-    @if (AllowManualControl)
+<div class="container">
+    <div class="row">
+    @if (IsPlatformSupported)
     {
-        <label>
-            <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged"/> True
-        </label>
-        <label>
-            <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged"/> False
-        </label>
+        <div class="col-sm">
+            <div class="card">
+                <h1 class="card-header text-center text-white bg-info mb-3">Temperature: @Temperature°@Unit</h1>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-7">
+                            <h5>Fan is running</h5>
+                        </div>
+                        <div class="col-5">
+                            <h5>@FanIsRunning</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            Threshold
+                        </div>
+                        <div class="col-5">
+                            @TemperatureThreshold°@Unit
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            Mode
+                        </div>
+                        <div class="col-5">
+                            @RegulationMode
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            Sleep time
+                        </div>
+                        <div class="col-5">
+                            @SleepTime s
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-white bg-info mb-3">
+                    <form>
+                        <fieldset class="form-group">
+                            <div class="row">
+                                <legend class="col-form-label col-7 pt-0">Mode</legend>
+                                <div class="col-5">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Automatic)" value="Automatic" @onchange="ModeChanged" /> Automatic
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" name="mode" checked="@(RegulationMode == RegulationMode.Manual)" value="Manual" @onchange="ModeChanged" /> Manual
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <div class="row">
+                                <legend class="col-form-label col-7 pt-0">Fan</legend>
+                                <div class="col-5">
+                                    <div class="form-check">
+                                        @if (AllowManualControl)
+                                        {
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged" /> Turn On
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged" disabled /> Turn On
+                                            </label>
+                                        }
+                                    </div>
+                                    <div class="form-check">
+                                        @if (AllowManualControl)
+                                        {
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged" /> Turn Off
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged" disabled /> Turn Off
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="form-group row">
+                            <label for="threshold" class="col-7 col-form-label">Threshold [°@Unit]</label>
+                            <div class="col-5">
+                                <input type="number" class="form-control" id="threshold" name="threshold" value="@TemperatureThreshold" @onchange="TemperatureThresholdChanged">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sleepTime" class="col-7 col-form-label">Sleep time [s]</label>
+                            <div class="col-5">
+                                <input type="number" class="form-control" id="sleepTime" name="sleepTime" value="@SleepTime" @onchange="SleepTimeChanged">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        @if (HasError)
+        {
+            <div class="alert alert-danger" role="alert">
+                Error message: @ErrorMessage
+            </div>
+        }
     }
     else
     {
-        <label>
-            <input type="radio" name="fanIsRunning" value="True" @onchange="FanIsRunningChanged" disabled/> True
-        </label>
-        <label>
-            <input type="radio" name="fanIsRunning" value="False" @onchange="FanIsRunningChanged" disabled/> False
-        </label>
+        <div class="alert alert-danger" role="alert">
+            Sorry, your OS platform is not supported.
+        </div>
     }
-    <br/>
-    <label>
-        Temperature Threshold [°@Unit]:
-        <input type="number" id="threshold" name="threshold" @onchange="TemperatureThresholdChanged">
-    </label>
-    <br/>
-    <label>
-        Sleep time [s]:
-        <input type="number" id="sleepTime" name="sleepTime" @onchange="SleepTimeChanged">
-    </label>
-
-    @if (HasError)
-    {
-        <p>Error message: @ErrorMessage</p>
-    }
-}
-else
-{
-    <p>Sorry, your OS platform is not supported.</p>
-}
-
-
+    </div>
+</div>
 
 @code {
 
@@ -68,9 +141,9 @@ else
 
     private bool AllowManualControl { get; set; }
 
-    private double Temperature { get; set; }
+    private string Temperature { get; set; }
 
-    private double TemperatureThreshold { get; set; }
+    private int TemperatureThreshold { get; set; }
 
     private int SleepTime { get; set; }
 
@@ -95,8 +168,8 @@ else
     {
         while (true)
         {
-            Temperature = Math.Round(RaspiTemperatureController.CurrentTemperature, 1);
-            TemperatureThreshold = Math.Round(RaspiTemperatureController.TemperatureThreshold, 1);
+            Temperature = $"{RaspiTemperatureController.CurrentTemperature:F1}";
+            TemperatureThreshold = RaspiTemperatureController.TemperatureThreshold;
             SleepTime = RaspiTemperatureController.MinimumSleepTime;
             Unit = RaspiTemperatureController.Unit;
             RegulationMode = RaspiTemperatureController.RegulationMode;
@@ -124,7 +197,7 @@ else
 
     private void TemperatureThresholdChanged(ChangeEventArgs changeEventArgs)
     {
-        if (double.TryParse(changeEventArgs?.Value?.ToString(), out var result))
+        if (int.TryParse(changeEventArgs?.Value?.ToString(), out var result))
         {
             ErrorMessage = string.Empty;
             RaspiTemperatureController.SetTemperatureThreshold(result);

@@ -31,7 +31,7 @@ namespace RaspiFanController.Logic
 
         public RegulationMode RegulationMode { get; private set; }
 
-        public double TemperatureThreshold { get; private set; }
+        public int TemperatureThreshold { get; private set; }
 
         private Stopwatch Stopwatch { get; }
 
@@ -64,7 +64,7 @@ namespace RaspiFanController.Logic
             }
         }
 
-        public void SetTemperatureThreshold(double thresholdTemperature)
+        public void SetTemperatureThreshold(int thresholdTemperature)
         {
             TemperatureThreshold = thresholdTemperature;
         }
