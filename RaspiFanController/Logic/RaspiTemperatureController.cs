@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RaspiFanController.Logic
@@ -9,9 +10,11 @@ namespace RaspiFanController.Logic
         {
             TemperatureProvider = temperatureProvider;
             FanController = fanController;
+            MinimumSleepTime = 60;
             RefreshInterval = 1000;
             TemperatureThreshold = 40;
             RegulationMode = RegulationMode.Automatic;
+            Stopwatch = new Stopwatch();
         }
 
         public bool IsPlatformSupported => TemperatureProvider.IsPlatformSupported();
@@ -20,6 +23,8 @@ namespace RaspiFanController.Logic
 
         public bool IsFanRunning => FanController.IsFanRunning;
 
+        public int MinimumSleepTime { get; private set; }
+
         public double CurrentTemperature { get; private set; }
 
         public string Unit { get; private set; }
@@ -27,6 +32,8 @@ namespace RaspiFanController.Logic
         public RegulationMode RegulationMode { get; private set; }
 
         public double TemperatureThreshold { get; private set; }
+
+        private Stopwatch Stopwatch { get; }
 
         private ITemperatureProvider TemperatureProvider { get; }
 
@@ -37,17 +44,23 @@ namespace RaspiFanController.Logic
             RegulationMode = RegulationMode.Automatic;
         }
 
-        public void SetManualTemperatureRegulation(bool fanIsRunning)
+        public void SetManualTemperatureRegulation(bool fanShouldRun)
         {
             RegulationMode = RegulationMode.Manual;
 
-            if (fanIsRunning)
+            if (fanShouldRun)
             {
-                FanController.TurnFanOn();
+                if (!IsFanRunning)
+                {
+                    FanController.TurnFanOn();
+                }
             }
             else
             {
-                FanController.TurnFanOff();
+                if (IsFanRunning)
+                {
+                    FanController.TurnFanOff();
+                }
             }
         }
 
@@ -66,16 +79,44 @@ namespace RaspiFanController.Logic
                 {
                     if (CurrentTemperature >= TemperatureThreshold)
                     {
-                        FanController.TurnFanOn();
+                        if (!FanController.IsFanRunning && SleepTimeReached())
+                        {
+                            FanController.TurnFanOn();
+                        }
                     }
                     else
                     {
-                        FanController.TurnFanOff();
+                        if (IsFanRunning && SleepTimeReached())
+                        {
+                            FanController.TurnFanOff();
+                        }
                     }
                 }
 
                 await Task.Delay(RefreshInterval, stoppingToken);
             }
+        }
+
+        public void SetSleepTime(int sleepTime)
+        {
+            MinimumSleepTime = sleepTime;
+        }
+
+        private bool SleepTimeReached()
+        {
+            if (!Stopwatch.IsRunning)
+            {
+                Stopwatch.Restart();
+                return false;
+            }
+
+            if (Stopwatch.Elapsed.TotalSeconds > MinimumSleepTime)
+            {
+                Stopwatch.Restart();
+                return true;
+            }
+
+            return false;
         }
     }
 }

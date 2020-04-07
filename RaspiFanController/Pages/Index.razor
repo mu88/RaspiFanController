@@ -6,6 +6,7 @@
 {
     <p>Current temperature: @Temperature°@Unit</p>
     <p>Temperature threshold: @TemperatureThreshold°@Unit</p>
+    <p>Sleep time: @SleepTime s</p>
     <p>Mode: @RegulationMode</p>
     <p>Fan is running: @FanIsRunning</p>
 
@@ -36,8 +37,13 @@
     }
     <br/>
     <label>
-        Temperature Threshold:
+        Temperature Threshold [°@Unit]:
         <input type="number" id="threshold" name="threshold" @onchange="TemperatureThresholdChanged">
+    </label>
+    <br/>
+    <label>
+        Sleep time [s]:
+        <input type="number" id="sleepTime" name="sleepTime" @onchange="SleepTimeChanged">
     </label>
 
     @if (HasError)
@@ -66,6 +72,8 @@ else
 
     private double TemperatureThreshold { get; set; }
 
+    private int SleepTime { get; set; }
+
     private string Unit { get; set; }
 
     private bool HasError => !string.IsNullOrEmpty(ErrorMessage);
@@ -89,6 +97,7 @@ else
         {
             Temperature = Math.Round(RaspiTemperatureController.CurrentTemperature, 1);
             TemperatureThreshold = Math.Round(RaspiTemperatureController.TemperatureThreshold, 1);
+            SleepTime = RaspiTemperatureController.MinimumSleepTime;
             Unit = RaspiTemperatureController.Unit;
             RegulationMode = RaspiTemperatureController.RegulationMode;
             FanIsRunning = RaspiTemperatureController.IsFanRunning;
@@ -122,7 +131,20 @@ else
         }
         else
         {
-            ErrorMessage = "Please enter a valid number";
+            ErrorMessage = "Please enter a valid number for temperature threshold";
+        }
+    }
+
+    private void SleepTimeChanged(ChangeEventArgs changeEventArgs)
+    {
+        if (int.TryParse(changeEventArgs?.Value?.ToString(), out var result))
+        {
+            ErrorMessage = string.Empty;
+            RaspiTemperatureController.SetSleepTime(result);
+        }
+        else
+        {
+            ErrorMessage = "Please enter a valid number for sleep time";
         }
     }
 
