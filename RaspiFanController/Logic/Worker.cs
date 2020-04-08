@@ -7,17 +7,21 @@ namespace RaspiFanController.Logic
     public class Worker : BackgroundService
     {
         /// <inheritdoc />
-        public Worker(RaspiTemperatureController raspiTemperatureController)
+        public Worker(RaspiTemperatureController raspiTemperatureController, ITaskCancellationHelper taskCancellationHelper)
         {
             RaspiTemperatureController = raspiTemperatureController;
+            TaskCancellationHelper = taskCancellationHelper;
         }
 
         private RaspiTemperatureController RaspiTemperatureController { get; }
 
+        private ITaskCancellationHelper TaskCancellationHelper { get; }
+
         /// <inheritdoc />
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await RaspiTemperatureController.StartTemperatureMeasurementAsync(stoppingToken);
+            TaskCancellationHelper.SetCancellationToken(stoppingToken);
+            await RaspiTemperatureController.StartTemperatureMeasurementAsync();
         }
     }
 }

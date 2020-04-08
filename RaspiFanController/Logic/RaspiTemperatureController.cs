@@ -1,12 +1,14 @@
-﻿using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace RaspiFanController.Logic
 {
     public class RaspiTemperatureController
     {
-        public RaspiTemperatureController(ITemperatureProvider temperatureProvider, IFanController fanController)
+        public RaspiTemperatureController(ITemperatureProvider temperatureProvider,
+                                          IFanController fanController,
+                                          IWrappedStopwatch stopwatch,
+                                          ITaskCancellationHelper taskCancellationHelper,
+                                          ITaskHelper taskHelper)
         {
             TemperatureProvider = temperatureProvider;
             FanController = fanController;
@@ -14,7 +16,9 @@ namespace RaspiFanController.Logic
             RefreshInterval = 1000;
             TemperatureThreshold = 40;
             RegulationMode = RegulationMode.Automatic;
-            Stopwatch = new Stopwatch();
+            Stopwatch = stopwatch;
+            TaskCancellationHelper = taskCancellationHelper;
+            TaskHelper = taskHelper;
         }
 
         public bool IsPlatformSupported => TemperatureProvider.IsPlatformSupported();
@@ -33,11 +37,15 @@ namespace RaspiFanController.Logic
 
         public int TemperatureThreshold { get; private set; }
 
-        private Stopwatch Stopwatch { get; }
+        private IWrappedStopwatch Stopwatch { get; }
 
         private ITemperatureProvider TemperatureProvider { get; }
 
         private IFanController FanController { get; }
+
+        private ITaskCancellationHelper TaskCancellationHelper { get; }
+
+        private ITaskHelper TaskHelper { get; }
 
         public void SetAutomaticTemperatureRegulation()
         {
@@ -69,9 +77,9 @@ namespace RaspiFanController.Logic
             TemperatureThreshold = thresholdTemperature;
         }
 
-        public async Task StartTemperatureMeasurementAsync(CancellationToken stoppingToken)
+        public async Task StartTemperatureMeasurementAsync()
         {
-            while (!stoppingToken.IsCancellationRequested)
+            while (!TaskCancellationHelper.IsCancellationRequested)
             {
                 (CurrentTemperature, Unit) = TemperatureProvider.GetTemperature();
 
@@ -93,7 +101,7 @@ namespace RaspiFanController.Logic
                     }
                 }
 
-                await Task.Delay(RefreshInterval, stoppingToken);
+                await TaskHelper.Delay(RefreshInterval, TaskCancellationHelper.CancellationToken);
             }
         }
 

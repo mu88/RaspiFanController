@@ -30,6 +30,9 @@ namespace RaspiFanController
             services.AddServerSideBlazor();
             services.AddHostedService<Worker>();
             services.AddSingleton<RaspiTemperatureController>();
+            services.AddTransient<IWrappedStopwatch, WrappedStopwatch>();
+            services.AddSingleton<ITaskHelper, TaskHelper>();
+            services.AddSingleton<ITaskCancellationHelper, TaskCancellationHelper>();
 
             if (HostingEnvironment.IsDevelopment())
             {
