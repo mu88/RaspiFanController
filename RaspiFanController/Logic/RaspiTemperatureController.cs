@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace RaspiFanController.Logic
 {
@@ -7,16 +8,18 @@ namespace RaspiFanController.Logic
         public RaspiTemperatureController(ITemperatureProvider temperatureProvider,
                                           IFanController fanController,
                                           ITaskCancellationHelper taskCancellationHelper,
-                                          ITaskHelper taskHelper)
+                                          ITaskHelper taskHelper,
+                                          ILogger<RaspiTemperatureController> logger)
         {
             TemperatureProvider = temperatureProvider;
             FanController = fanController;
             RefreshInterval = 1000;
-            UpperTemperatureThreshold = 40;
-            LowerTemperatureThreshold = 30;
+            UpperTemperatureThreshold = 55;
+            LowerTemperatureThreshold = 48;
             RegulationMode = RegulationMode.Automatic;
             TaskCancellationHelper = taskCancellationHelper;
             TaskHelper = taskHelper;
+            Logger = logger;
         }
 
         public bool IsPlatformSupported => TemperatureProvider.IsPlatformSupported();
@@ -43,9 +46,12 @@ namespace RaspiFanController.Logic
 
         private ITaskHelper TaskHelper { get; }
 
+        private ILogger<RaspiTemperatureController> Logger { get; }
+
         public void SetAutomaticTemperatureRegulation()
         {
             RegulationMode = RegulationMode.Automatic;
+            Logger.LogInformation("Set automatic mode");
         }
 
         public void SetManualTemperatureRegulation(bool fanShouldRun)
@@ -57,6 +63,7 @@ namespace RaspiFanController.Logic
                 if (!IsFanRunning)
                 {
                     FanController.TurnFanOn();
+                    Logger.LogDebug("Set manual mode and turned on");
                 }
             }
             else
@@ -64,6 +71,7 @@ namespace RaspiFanController.Logic
                 if (IsFanRunning)
                 {
                     FanController.TurnFanOff();
+                    Logger.LogDebug("Set manual mode and turned on");
                 }
             }
         }
@@ -76,6 +84,7 @@ namespace RaspiFanController.Logic
             }
 
             UpperTemperatureThreshold = upperTemperatureThreshold;
+            Logger.LogInformation("Set upper threshold");
 
             return true;
         }
@@ -85,6 +94,7 @@ namespace RaspiFanController.Logic
             while (!TaskCancellationHelper.IsCancellationRequested)
             {
                 (CurrentTemperature, Unit) = TemperatureProvider.GetTemperature();
+                Logger.LogDebug($"Current: {CurrentTemperature}°{Unit}");
 
                 if (RegulationMode == RegulationMode.Automatic)
                 {
@@ -93,6 +103,7 @@ namespace RaspiFanController.Logic
                         if (!FanController.IsFanRunning)
                         {
                             FanController.TurnFanOn();
+                            Logger.LogDebug("Turned fan on in automatic mode");
                         }
                     }
                     else if (CurrentTemperature < LowerTemperatureThreshold)
@@ -100,6 +111,7 @@ namespace RaspiFanController.Logic
                         if (IsFanRunning)
                         {
                             FanController.TurnFanOff();
+                            Logger.LogDebug("Turned fan off in automatic mode");
                         }
                     }
                 }
@@ -116,6 +128,7 @@ namespace RaspiFanController.Logic
             }
 
             LowerTemperatureThreshold = lowerTemperatureThreshold;
+            Logger.LogInformation("Set lower threshold");
 
             return true;
         }
