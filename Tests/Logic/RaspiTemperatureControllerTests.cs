@@ -18,6 +18,8 @@ namespace Tests.Logic
             autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((61, "C"));
             autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(false);
             var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
+            testee.TrySetLowerTemperatureThreshold(30);
+            testee.TrySetUpperTemperatureThreshold(40);
 
             await testee.StartTemperatureMeasurementAsync();
 
@@ -33,6 +35,8 @@ namespace Tests.Logic
             autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((29, "C"));
             autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
             var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
+            testee.TrySetLowerTemperatureThreshold(30);
+            testee.TrySetUpperTemperatureThreshold(40);
 
             await testee.StartTemperatureMeasurementAsync();
 
@@ -70,6 +74,8 @@ namespace Tests.Logic
         public void TrySetUpperTemperatureThreshold()
         {
             var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
+            testee.TrySetLowerTemperatureThreshold(30);
+            testee.TrySetUpperTemperatureThreshold(40);
 
             var result = testee.TrySetUpperTemperatureThreshold(35);
 
@@ -78,9 +84,11 @@ namespace Tests.Logic
         }
 
         [Test]
-        public void TrySetUpperTemperatureThresholdFailsForToLowTemperature()
+        public void TrySetUpperTemperatureThresholdFailsForTooLowTemperature()
         {
             var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
+            testee.TrySetLowerTemperatureThreshold(30);
+            testee.TrySetUpperTemperatureThreshold(40);
 
             var result = testee.TrySetUpperTemperatureThreshold(10);
 
@@ -100,9 +108,11 @@ namespace Tests.Logic
         }
 
         [Test]
-        public void TrySetLowerTemperatureThresholdFailsForToHighTemperature()
+        public void TrySetLowerTemperatureThresholdFailsForTooHighTemperature()
         {
             var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
+            testee.TrySetLowerTemperatureThreshold(30);
+            testee.TrySetUpperTemperatureThreshold(40);
 
             var result = testee.TrySetLowerTemperatureThreshold(50);
 
