@@ -7,18 +7,14 @@ namespace RaspiFanController.Logic
         public RaspiFanController()
         {
             GpioPin = 17;
+
+            var gpioController = new GpioController();
+            gpioController.OpenPin(GpioPin, PinMode.Input);
+            IsFanRunning = gpioController.Read(GpioPin) == PinValue.High;
         }
 
         /// <inheritdoc />
-        public bool IsFanRunning
-        {
-            get
-            {
-                var gpioController = new GpioController();
-                gpioController.OpenPin(GpioPin, PinMode.Input);
-                return gpioController.Read(GpioPin) == PinValue.High;
-            }
-        }
+        public bool IsFanRunning { get; private set; }
 
         private int GpioPin { get; }
 
@@ -28,6 +24,7 @@ namespace RaspiFanController.Logic
             var gpioController = new GpioController();
             gpioController.OpenPin(GpioPin, PinMode.Output);
             gpioController.Write(GpioPin, PinValue.High);
+            IsFanRunning = true;
         }
 
         /// <inheritdoc />
@@ -36,6 +33,7 @@ namespace RaspiFanController.Logic
             var gpioController = new GpioController();
             gpioController.OpenPin(GpioPin, PinMode.Output);
             gpioController.Write(GpioPin, PinValue.Low);
+            IsFanRunning = false;
         }
     }
 }

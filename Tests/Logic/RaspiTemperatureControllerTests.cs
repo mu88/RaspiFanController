@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -12,24 +11,12 @@ namespace Tests.Logic
     public class RaspiTemperatureControllerTests
     {
         [Test]
-        public void SetSleepTime()
-        {
-            var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
-
-            testee.SetSleepTime(10);
-
-            testee.MinimumSleepTime.Should().Be(10);
-        }
-
-        [Test]
         public async Task TurnFanOnInAutomaticMode()
         {
             var autoMocker = new AutoMocker();
             autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
             autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((61, "C"));
             autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(false);
-            autoMocker.Setup<IWrappedStopwatch, bool>(x => x.IsRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, TimeSpan>(x => x.Elapsed).Returns(new TimeSpan(0, 2, 0));
             var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
             await testee.StartTemperatureMeasurementAsync();
@@ -39,31 +26,12 @@ namespace Tests.Logic
         }
 
         [Test]
-        public async Task StartStopWatch()
-        {
-            var autoMocker = new AutoMocker();
-            autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
-            autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((61, "C"));
-            autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(false);
-            autoMocker.Setup<IWrappedStopwatch, bool>(x => x.IsRunning).Returns(false);
-            var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
-
-            await testee.StartTemperatureMeasurementAsync();
-
-            autoMocker.Verify<IFanController>(x => x.TurnFanOn(), Times.Never);
-            autoMocker.Verify<IWrappedStopwatch>(x => x.Restart(), Times.Once);
-            autoMocker.Verify<ITaskHelper>(x => x.Delay(testee.RefreshInterval, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Test]
         public async Task TurnFanOffInAutomaticMode()
         {
             var autoMocker = new AutoMocker();
             autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
-            autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((39, "C"));
+            autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((29, "C"));
             autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, bool>(x => x.IsRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, TimeSpan>(x => x.Elapsed).Returns(new TimeSpan(0, 2, 0));
             var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
             await testee.StartTemperatureMeasurementAsync();
@@ -79,8 +47,6 @@ namespace Tests.Logic
             autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
             autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((39, "C"));
             autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, bool>(x => x.IsRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, TimeSpan>(x => x.Elapsed).Returns(new TimeSpan(0, 2, 0));
             var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
             await testee.StartTemperatureMeasurementAsync();
@@ -101,47 +67,47 @@ namespace Tests.Logic
         }
 
         [Test]
-        public async Task DoNotTurnFanOffInAutomaticModeWhenSleepTimeNotReached()
-        {
-            var autoMocker = new AutoMocker();
-            autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
-            autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((39, "C"));
-            autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, bool>(x => x.IsRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, TimeSpan>(x => x.Elapsed).Returns(new TimeSpan(0, 0, 20));
-            var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
-
-            await testee.StartTemperatureMeasurementAsync();
-
-            autoMocker.Verify<IFanController>(x => x.TurnFanOff(), Times.Never);
-            autoMocker.Verify<ITaskHelper>(x => x.Delay(testee.RefreshInterval, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Test]
-        public async Task DoNotTurnFanOnInAutomaticModeWhenSleepTimeNotReached()
-        {
-            var autoMocker = new AutoMocker();
-            autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
-            autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((51, "C"));
-            autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(false);
-            autoMocker.Setup<IWrappedStopwatch, bool>(x => x.IsRunning).Returns(true);
-            autoMocker.Setup<IWrappedStopwatch, TimeSpan>(x => x.Elapsed).Returns(new TimeSpan(0, 0, 20));
-            var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
-
-            await testee.StartTemperatureMeasurementAsync();
-
-            autoMocker.Verify<IFanController>(x => x.TurnFanOn(), Times.Never);
-            autoMocker.Verify<ITaskHelper>(x => x.Delay(testee.RefreshInterval, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Test]
-        public void SetTemperatureThreshold()
+        public void TrySetUpperTemperatureThreshold()
         {
             var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
 
-            testee.SetTemperatureThreshold(10);
+            var result = testee.TrySetUpperTemperatureThreshold(35);
 
-            testee.TemperatureThreshold.Should().Be(10);
+            result.Should().BeTrue();
+            testee.UpperTemperatureThreshold.Should().Be(35);
+        }
+
+        [Test]
+        public void TrySetUpperTemperatureThresholdFailsForToLowTemperature()
+        {
+            var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
+
+            var result = testee.TrySetUpperTemperatureThreshold(10);
+
+            result.Should().BeFalse();
+            testee.UpperTemperatureThreshold.Should().Be(40);
+        }
+
+        [Test]
+        public void TrySetLowerTemperatureThreshold()
+        {
+            var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
+
+            var result = testee.TrySetLowerTemperatureThreshold(35);
+
+            result.Should().BeTrue();
+            testee.LowerTemperatureThreshold.Should().Be(35);
+        }
+
+        [Test]
+        public void TrySetLowerTemperatureThresholdFailsForToHighTemperature()
+        {
+            var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
+
+            var result = testee.TrySetLowerTemperatureThreshold(50);
+
+            result.Should().BeFalse();
+            testee.LowerTemperatureThreshold.Should().Be(30);
         }
 
         [Test]

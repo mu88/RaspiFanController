@@ -6,17 +6,15 @@ namespace RaspiFanController.Logic
     {
         public RaspiTemperatureController(ITemperatureProvider temperatureProvider,
                                           IFanController fanController,
-                                          IWrappedStopwatch stopwatch,
                                           ITaskCancellationHelper taskCancellationHelper,
                                           ITaskHelper taskHelper)
         {
             TemperatureProvider = temperatureProvider;
             FanController = fanController;
-            MinimumSleepTime = 60;
             RefreshInterval = 1000;
-            TemperatureThreshold = 40;
+            UpperTemperatureThreshold = 40;
+            LowerTemperatureThreshold = 30;
             RegulationMode = RegulationMode.Automatic;
-            Stopwatch = stopwatch;
             TaskCancellationHelper = taskCancellationHelper;
             TaskHelper = taskHelper;
         }
@@ -27,7 +25,7 @@ namespace RaspiFanController.Logic
 
         public bool IsFanRunning => FanController.IsFanRunning;
 
-        public int MinimumSleepTime { get; private set; }
+        public int LowerTemperatureThreshold { get; private set; }
 
         public double CurrentTemperature { get; private set; }
 
@@ -35,9 +33,7 @@ namespace RaspiFanController.Logic
 
         public RegulationMode RegulationMode { get; private set; }
 
-        public int TemperatureThreshold { get; private set; }
-
-        private IWrappedStopwatch Stopwatch { get; }
+        public int UpperTemperatureThreshold { get; private set; }
 
         private ITemperatureProvider TemperatureProvider { get; }
 
@@ -72,9 +68,16 @@ namespace RaspiFanController.Logic
             }
         }
 
-        public void SetTemperatureThreshold(int thresholdTemperature)
+        public bool TrySetUpperTemperatureThreshold(int upperTemperatureThreshold)
         {
-            TemperatureThreshold = thresholdTemperature;
+            if (upperTemperatureThreshold <= LowerTemperatureThreshold)
+            {
+                return false;
+            }
+
+            UpperTemperatureThreshold = upperTemperatureThreshold;
+
+            return true;
         }
 
         public async Task StartTemperatureMeasurementAsync()
@@ -85,16 +88,16 @@ namespace RaspiFanController.Logic
 
                 if (RegulationMode == RegulationMode.Automatic)
                 {
-                    if (CurrentTemperature >= TemperatureThreshold)
+                    if (CurrentTemperature >= UpperTemperatureThreshold)
                     {
-                        if (!FanController.IsFanRunning && SleepTimeReached())
+                        if (!FanController.IsFanRunning)
                         {
                             FanController.TurnFanOn();
                         }
                     }
-                    else
+                    else if (CurrentTemperature < LowerTemperatureThreshold)
                     {
-                        if (IsFanRunning && SleepTimeReached())
+                        if (IsFanRunning)
                         {
                             FanController.TurnFanOff();
                         }
@@ -105,26 +108,16 @@ namespace RaspiFanController.Logic
             }
         }
 
-        public void SetSleepTime(int sleepTime)
+        public bool TrySetLowerTemperatureThreshold(int lowerTemperatureThreshold)
         {
-            MinimumSleepTime = sleepTime;
-        }
-
-        private bool SleepTimeReached()
-        {
-            if (!Stopwatch.IsRunning)
+            if (lowerTemperatureThreshold >= UpperTemperatureThreshold)
             {
-                Stopwatch.Restart();
                 return false;
             }
 
-            if (Stopwatch.Elapsed.TotalSeconds > MinimumSleepTime)
-            {
-                Stopwatch.Restart();
-                return true;
-            }
+            LowerTemperatureThreshold = lowerTemperatureThreshold;
 
-            return false;
+            return true;
         }
     }
 }
