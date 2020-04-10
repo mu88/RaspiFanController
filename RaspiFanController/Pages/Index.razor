@@ -51,6 +51,14 @@
                                 @RegulationMode
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-7">
+                                Uptime
+                            </div>
+                            <div class="col-5">
+                                @Uptime.ToString(@"d\.hh\:mm\:ss")
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer text-white bg-info mb-3">
                         <form>
@@ -156,6 +164,8 @@
 
     private string ErrorMessage { get; set; }
 
+    private TimeSpan Uptime { get; set; }
+
     /// <inheritdoc />
     protected override void OnInitialized()
     {
@@ -177,6 +187,7 @@
             Unit = RaspiTemperatureController.Unit;
             RegulationMode = RaspiTemperatureController.RegulationMode;
             FanIsRunning = RaspiTemperatureController.IsFanRunning;
+            Uptime = RaspiTemperatureController.Uptime;
 
             StateHasChanged();
 
@@ -244,4 +255,3 @@
     }
 
 }
-

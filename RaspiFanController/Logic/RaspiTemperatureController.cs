@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace RaspiFanController.Logic
@@ -17,6 +18,7 @@ namespace RaspiFanController.Logic
             UpperTemperatureThreshold = 55;
             LowerTemperatureThreshold = 48;
             RegulationMode = RegulationMode.Automatic;
+            StartTime = DateTime.Now;
             TaskCancellationHelper = taskCancellationHelper;
             TaskHelper = taskHelper;
             Logger = logger;
@@ -27,6 +29,8 @@ namespace RaspiFanController.Logic
         public int RefreshInterval { get; }
 
         public bool IsFanRunning => FanController.IsFanRunning;
+
+        public TimeSpan Uptime => DateTime.Now - StartTime;
 
         public int LowerTemperatureThreshold { get; private set; }
 
@@ -47,6 +51,8 @@ namespace RaspiFanController.Logic
         private ITaskHelper TaskHelper { get; }
 
         private ILogger<RaspiTemperatureController> Logger { get; }
+
+        private DateTime StartTime { get; }
 
         public void SetAutomaticTemperatureRegulation()
         {

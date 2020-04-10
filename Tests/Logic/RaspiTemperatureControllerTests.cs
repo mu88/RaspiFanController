@@ -97,6 +97,20 @@ namespace Tests.Logic
         }
 
         [Test]
+        public async Task GetUptime()
+        {
+            var autoMocker = new AutoMocker();
+            autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
+            autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((39, "C"));
+            autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
+            var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
+
+            await testee.StartTemperatureMeasurementAsync();
+
+            testee.Uptime.Should().BePositive();
+        }
+
+        [Test]
         public void TrySetLowerTemperatureThreshold()
         {
             var testee = new AutoMocker().CreateInstance<RaspiTemperatureController>();
