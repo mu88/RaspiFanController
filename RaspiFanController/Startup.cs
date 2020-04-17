@@ -32,6 +32,7 @@ namespace RaspiFanController
             services.AddSingleton<RaspiTemperatureController>();
             services.AddSingleton<ITaskHelper, TaskHelper>();
             services.AddSingleton<ITaskCancellationHelper, TaskCancellationHelper>();
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             if (HostingEnvironment.IsDevelopment())
             {

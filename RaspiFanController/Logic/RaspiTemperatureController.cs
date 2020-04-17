@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace RaspiFanController.Logic
 {
@@ -10,13 +11,14 @@ namespace RaspiFanController.Logic
                                           IFanController fanController,
                                           ITaskCancellationHelper taskCancellationHelper,
                                           ITaskHelper taskHelper,
-                                          ILogger<RaspiTemperatureController> logger)
+                                          ILogger<RaspiTemperatureController> logger,
+                                          IOptionsMonitor<AppSettings> settings)
         {
             TemperatureProvider = temperatureProvider;
             FanController = fanController;
-            RefreshInterval = 1000;
-            UpperTemperatureThreshold = 55;
-            LowerTemperatureThreshold = 48;
+            RefreshMilliseconds = settings.CurrentValue.RefreshMilliseconds;
+            UpperTemperatureThreshold = settings.CurrentValue.UpperTemperatureThreshold;
+            LowerTemperatureThreshold = settings.CurrentValue.LowerTemperatureThreshold;
             RegulationMode = RegulationMode.Automatic;
             StartTime = DateTime.Now;
             TaskCancellationHelper = taskCancellationHelper;
@@ -26,7 +28,7 @@ namespace RaspiFanController.Logic
 
         public bool IsPlatformSupported => TemperatureProvider.IsPlatformSupported();
 
-        public int RefreshInterval { get; }
+        public int RefreshMilliseconds { get; }
 
         public bool IsFanRunning => FanController.IsFanRunning;
 
@@ -122,7 +124,7 @@ namespace RaspiFanController.Logic
                     }
                 }
 
-                await TaskHelper.Delay(RefreshInterval, TaskCancellationHelper.CancellationToken);
+                await TaskHelper.Delay(RefreshMilliseconds, TaskCancellationHelper.CancellationToken);
             }
         }
 
