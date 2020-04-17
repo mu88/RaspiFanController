@@ -17,7 +17,7 @@
         {
             <div class="col-sm">
                 <div class="card">
-                    <h1 class="card-header text-center text-white bg-info mb-3">Temperature: @Temperature°@Unit</h1>
+                    <h1 class="card-header text-center text-white bg-info mb-3">Live: @Temperature°@Unit</h1>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-7">
@@ -113,13 +113,13 @@
                                 </div>
                             </fieldset>
                             <div class="form-group row">
-                                <label for="upperThreshold" class="col-7 col-form-label">Upper Threshold [°@Unit]</label>
+                                <label for="upperThreshold" class="col-7 col-form-label">Upper Threshold</label>
                                 <div class="col-5">
                                     <input type="number" class="form-control" id="upperThreshold" name="threshold" value="@UpperTemperatureThreshold" min="@MinForUpperThreshold" @onchange="UpperTemperatureThresholdChanged">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="lowerThreshold" class="col-7 col-form-label">Lower Threshold [°@Unit]</label>
+                                <label for="lowerThreshold" class="col-7 col-form-label">Lower Threshold</label>
                                 <div class="col-5">
                                     <input type="number" class="form-control" id="lowerThreshold" name="threshold" value="@LowerTemperatureThreshold" max="@MaxForLowerThreshold" @onchange="LowerTemperatureThresholdChanged">
                                 </div>
