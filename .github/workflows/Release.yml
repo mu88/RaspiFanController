@@ -27,7 +27,7 @@ jobs:
       run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm -c Release /p:PublishSingleFile=true
     - name: Create artifact # This would actually build your project, using zip for an example artifact
       run: |
-        zip -r RaspiFanController.zip RaspiFanController/RaspiFanController/bin/Release/netcoreapp3.1/linux-arm/publish
+        zip -r RaspiFanController.zip ./RaspiFanController/RaspiFanController/bin/Release/netcoreapp3.1/linux-arm/publish
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
