@@ -1,6 +1,7 @@
 # Raspberry Pi Fan Controller
 
-![.NET Core](https://github.com/mu88/RaspiFanController/workflows/.NET%20Core/badge.svg)
+![CI](https://github.com/mu88/RaspiFanController/workflows/CI/badge.svg)
+![Release](https://github.com/mu88/RaspiFanController/workflows/Release/badge.svg)
 
 This repo contains an application to control the fan of a Raspberry Pi in order to avoid overheating. It is based on ASP.NET Core Blazor Server and uses the [.NET Core IoT Library](https://github.com/dotnet/iot) to access the GPIO pins of the Raspberry Pi.
 
