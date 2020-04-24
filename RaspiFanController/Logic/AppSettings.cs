@@ -7,5 +7,9 @@ namespace RaspiFanController.Logic
         public int UpperTemperatureThreshold { get; set; }
 
         public int LowerTemperatureThreshold { get; set; }
+
+        public int GpioPin { get; set; }
+
+        public string AppPathBase { get; set; }
     }
 }

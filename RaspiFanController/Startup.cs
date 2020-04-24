@@ -49,7 +49,11 @@ namespace RaspiFanController
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UsePathBase("/cool");
+            var appPathBase = Configuration.GetSection("AppSettings").Get<AppSettings>().AppPathBase;
+            if (!string.IsNullOrEmpty(appPathBase))
+            {
+                app.UsePathBase(appPathBase);
+            }
 
             if (env.IsDevelopment())
             {

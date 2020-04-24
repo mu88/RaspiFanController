@@ -2,9 +2,7 @@
 
 This repo contains an application to control the fan of a Raspberry Pi in order to avoid overheating. It is based on ASP.NET Core Blazor Server and uses the [.NET Core IoT Library](https://github.com/dotnet/iot) to access the GPIO pins of the Raspberry Pi.
 
-<center>
 <img src="https://mu88.github.io/public/post_assets/200424_Raspi_Fan_Controller/Image1.jpg" width="350" />
-</center>
 
 I wrote the following blog posts describing the complete ceremony a bit more in detail:
 
@@ -49,6 +47,8 @@ Within `appsettings.json`, the following app parameters can be controlled:
 * `RefreshMilliseconds` → The polling interval of the temperature controller. The shorter, the more often the current temperature will be retrieved from the OS.
 * `UpperTemperatureThreshold` → When this temperature is exceeded, the fan will be turned on.
 * `LowerTemperatureThreshold` → When this temperature is undershot, the fan will be turned off.
+* `GpioPin` → The GPIO pin that will control the transistor and therefore turning the fan on/off.
+* `AppPathBase` → This path will be used as the app's path base, see [`UsePathBase()`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.usepathbaseextensions.usepathbase?f1url=https%3A%2F%2Fmsdn.microsoft.com%2Fquery%2Fdev16.query%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(Microsoft.AspNetCore.Builder.UsePathBaseExtensions.UsePathBase);k(DevLang-csharp)%26rd%3Dtrue%26f%3D255%26MSPPError%3D-2147217396&view=aspnetcore-3.1).
 
 These parameters are read on app startup. When the app is running, they can be overridden via http://localhost:5000/cool, but they won't be written to `appsettings.json`.
 

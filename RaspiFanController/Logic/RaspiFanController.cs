@@ -1,14 +1,15 @@
 ﻿using System.Device.Gpio;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace RaspiFanController.Logic
 {
     public class RaspiFanController : IFanController
     {
-        public RaspiFanController(ILogger<RaspiFanController> logger)
+        public RaspiFanController(ILogger<RaspiFanController> logger, IOptionsMonitor<AppSettings> settings)
         {
             Logger = logger;
-            GpioPin = 17;
+            GpioPin = settings.CurrentValue.GpioPin;
 
             var gpioController = new GpioController();
             gpioController.OpenPin(GpioPin, PinMode.Input);
