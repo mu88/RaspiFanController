@@ -15,7 +15,7 @@ I wrote the following blog posts describing the complete ceremony a bit more in 
 
 ## Local development
 
-The app targets .NET Core 3.1. I've integrated the two classes `Logic\DevFanController.cs` and `Logic\DevTemperatureProvider.cs` for development purposes: they're simulating the temperature measurement and fan controlling when running the app in development mode.
+The app targets .NET 6. I've integrated the two classes `Logic\DevFanController.cs` and `Logic\DevTemperatureProvider.cs` for development purposes: they're simulating the temperature measurement and fan controlling when running the app in development mode.
 
 
 ## Deployment
@@ -24,12 +24,12 @@ The app is intended to be deployed as a [self-contained executable](https://docs
 
 Use the following command to generate the app:
 ```
-dotnet publish -r linux-arm -c Release /p:PublishSingleFile=true
+dotnet publish -r linux-arm -c Release /p:PublishSingleFile=true --self-contained
 ```
 
 The following command copies the build results:
 ```
-scp -r \bin\Release\netcoreapp3.1\linux-arm\publish pi@raspberry:/tmp/RaspiFanController/
+scp -r E:\Development\GitHub\RaspiFanController\RaspiFanController\bin\Release\net6.0\linux-arm\publish dynamo53@frambuesa4:/tmp/RaspiFanController/
 ```
 
 On the Raspberry, we have to allow the app to be executed:
