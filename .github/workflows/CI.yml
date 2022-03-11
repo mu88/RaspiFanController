@@ -22,6 +22,9 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --collect:"XPlat Code Coverage" --no-restore /p:ExcludeByFile=\"**/Pages/**/*.*\"
+      run: dotnet test --collect:"XPlat Code Coverage" --no-restore
     - name: Upload code coverage report
-      uses: codecov/codecov-action@v2
+      uses: codacy/codacy-coverage-reporter-action@v1
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: Tests/TestResults/*/coverage.cobertura.xml
