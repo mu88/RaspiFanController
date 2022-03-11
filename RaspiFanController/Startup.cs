@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using RaspiFanController.Logic;
 
 namespace RaspiFanController
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IWebHostEnvironment hostingEnvironment)
