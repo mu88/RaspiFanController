@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace RaspiFanController.Logic
 {
+    [ExcludeFromCodeCoverage]
     public class TaskCancellationHelper : ITaskCancellationHelper
     {
         public TaskCancellationHelper()

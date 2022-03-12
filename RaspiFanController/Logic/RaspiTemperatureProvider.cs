@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace RaspiFanController.Logic
 {
+    [ExcludeFromCodeCoverage]
     public class RaspiTemperatureProvider : ITemperatureProvider
     {
         public RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger)

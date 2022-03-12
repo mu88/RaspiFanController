@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RaspiFanController.Logic
 {
+    [ExcludeFromCodeCoverage]
     public class TaskHelper : ITaskHelper
     {
         /// <inheritdoc />

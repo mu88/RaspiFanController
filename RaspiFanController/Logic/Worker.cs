@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
 namespace RaspiFanController.Logic
 {
+    [ExcludeFromCodeCoverage]
     public class Worker : BackgroundService
     {
         /// <inheritdoc />

@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --collect:"XPlat Code Coverage" --no-restore
+      run: dotnet test --collect:"XPlat Code Coverage" --no-restore --settings Tests/coverlet.runsettings
     - name: Upload code coverage report
       uses: codacy/codacy-coverage-reporter-action@v1
       with:

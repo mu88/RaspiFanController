@@ -1,9 +1,11 @@
 ﻿using System.Device.Gpio;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace RaspiFanController.Logic
 {
+    [ExcludeFromCodeCoverage]
     public class RaspiFanController : IFanController
     {
         public RaspiFanController(ILogger<RaspiFanController> logger, IOptionsMonitor<AppSettings> settings)
