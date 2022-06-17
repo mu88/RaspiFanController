@@ -16,16 +16,17 @@ I wrote the following blog posts describing the complete ceremony a bit more in 
 The app targets .NET 6. I've integrated the two classes `Logic\DevFanController.cs` and `Logic\DevTemperatureProvider.cs` for development purposes: they're simulating the temperature measurement and fan controlling when running the app in development mode.
 
 ## Deployment
-The app is intended to be deployed as a [self-contained executable](https://docs.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained). Why not Docker, you may ask? The temperature measurement on Raspian needs to use `sudo`. I simply don't know whether a `sudo` command from within a container will be successfully forwarded to the host OS. I'd be interested if you know something about this!
+The app is deployed both as a [self-contained executable](https://docs.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained) and the Docker image [`mu88/raspifancontroller`](https://hub.docker.com/repository/docker/mu88/raspifancontroller).
 
+### Self-contained executable
 Use the following command to generate the app:
 ```shell
-dotnet publish -r linux-arm -c Release /p:PublishSingleFile=true --self-contained
+dotnet publish -r linux-arm64 -c Release /p:PublishSingleFile=true --self-contained
 ```
 
 The following command copies the build results:
 ```shell
-scp -r E:\Development\GitHub\RaspiFanController\RaspiFanController\bin\Release\net6.0\linux-arm\publish dynamo53@frambuesa4:/tmp/RaspiFanController/
+scp -r E:\Development\GitHub\RaspiFanController\RaspiFanController\bin\Release\net6.0\linux-arm64\publish user@yourRaspi:/tmp/RaspiFanController/
 ```
 
 On the Raspberry, we have to allow the app to be executed:
@@ -37,6 +38,16 @@ And finally, start the app using `sudo`. This is important because otherwise, re
 ```shell
 sudo /tmp/RaspiFanController/RaspiFanController
 ```
+
+### Docker
+You can either grab the prepared [`docker-compose.yml`](/RaspiFanController/docker-compose.yml) or start a new container with the following command:
+```shell
+docker run -p 5000:80 -d -v /lib:/lib -v /usr/bin/vcgencmd:/usr/bin/vcgencmd -e LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/gpiomem --restart always --name raspifancontroller mu88/raspifancontroller:latest
+```
+This will do the following:
+- Mount the necessary directories and executables into the container so that `vcgencmd` works properly.
+- Set the environment variable `LD_LIBRARY_PATH` so that `vcgencmd` works properly.
+- Mount the necessary devices so that `vcgencmd` works properly and the Raspberry's GPIO pins can be controlles from within the container.
 
 ## App configuration
 Within `appsettings.json`, the following app parameters can be controlled:
@@ -50,7 +61,7 @@ Within `appsettings.json`, the following app parameters can be controlled:
 These parameters are read on app startup. When the app is running, they can be overridden via http://localhost:5000/cool, but they won't be written to `appsettings.json`.
 
 ## Supported Platforms
-The app is running on my Raspberry Pi 4 Model B using Raspian. This works pretty well, I've registered it as a service so that it will start automatically with the OS.
+The app is running on my Raspberry Pi 4 Model B using Raspberry Pi OS x64.
 
 Theoretically, the code can be used on any IoT device and OS that provides its own temperature. For this, the `ITemperatureProvider` interface has to be implemented and registered within the DI container.
 

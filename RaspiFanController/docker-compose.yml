@@ -1,0 +1,15 @@
+﻿version: '3'
+services:
+  app:
+    environment:
+      - LD_LIBRARY_PATH=/opt/vc/lib
+    restart: unless-stopped
+    image: mu88/raspifancontroller:latest
+    ports:
+      - "5000:80"
+    volumes:
+      - /lib:/lib
+      - /usr/bin/vcgencmd:/usr/bin/vcgencmd
+    devices:
+      - "/dev/vchiq"
+      - "/dev/gpiomem"
