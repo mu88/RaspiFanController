@@ -4,32 +4,48 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - '*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
   Release:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0'
     - name: Install dependencies
       run: dotnet restore
-    - name: Build
+    - name: .NET Build
       run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
-    - name: Publish
+    - name: .NET Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build Docker and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: |
+          mu88/raspifancontroller:latest
+          mu88/raspifancontroller:${{ github.ref_name }}
+        file: RaspiFanController/Dockerfile
+    - name: .NET Publish
       run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm64 -c Release /p:PublishSingleFile=true --self-contained
-    - name: Create artifact # This would actually build your project, using zip for an example artifact
+    - name: Create artifact
       run: |
         cd /home/runner/work/RaspiFanController/RaspiFanController/RaspiFanController/bin/Release/net6.0/linux-arm64/publish
         zip -r RaspiFanController.zip *
-    - name: Create Release
+    - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -39,7 +55,7 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
-    - name: Upload Release Asset
+    - name: Upload asset to GitHub Release
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1
       env:
