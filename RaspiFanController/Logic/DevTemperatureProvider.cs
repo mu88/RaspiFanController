@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RaspiFanController.Logic
-{
-    [ExcludeFromCodeCoverage]
-    public class DevTemperatureProvider : ITemperatureProvider
-    {
-        /// <inheritdoc />
-        public (double, string) GetTemperature()
-        {
-            return (30 + 30 * new Random().NextDouble(), "C");
-        }
+namespace RaspiFanController.Logic;
 
-        /// <inheritdoc />
-        public bool IsPlatformSupported()
-        {
-            return true;
-        }
+[ExcludeFromCodeCoverage]
+public class DevTemperatureProvider : ITemperatureProvider
+{
+    /// <inheritdoc />
+    public (double, string) GetTemperature()
+    {
+        return (30 + 30 * new Random().NextDouble(), "C");
+    }
+
+    /// <inheritdoc />
+    public bool IsPlatformSupported()
+    {
+        return true;
     }
 }

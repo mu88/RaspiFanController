@@ -1,24 +1,23 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-namespace RaspiFanController.Logic
+namespace RaspiFanController.Logic;
+
+[ExcludeFromCodeCoverage]
+public class TaskCancellationHelper : ITaskCancellationHelper
 {
-    [ExcludeFromCodeCoverage]
-    public class TaskCancellationHelper : ITaskCancellationHelper
+    public TaskCancellationHelper()
     {
-        public TaskCancellationHelper()
-        {
-            CancellationToken = new CancellationToken();
-        }
+        CancellationToken = new CancellationToken();
+    }
 
-        public bool IsCancellationRequested => CancellationToken.IsCancellationRequested;
+    public bool IsCancellationRequested => CancellationToken.IsCancellationRequested;
 
-        public CancellationToken CancellationToken { get; private set; }
+    public CancellationToken CancellationToken { get; private set; }
 
-        /// <inheritdoc />
-        public void SetCancellationToken(CancellationToken cancellationToken)
-        {
-            CancellationToken = cancellationToken;
-        }
+    /// <inheritdoc />
+    public void SetCancellationToken(CancellationToken cancellationToken)
+    {
+        CancellationToken = cancellationToken;
     }
 }

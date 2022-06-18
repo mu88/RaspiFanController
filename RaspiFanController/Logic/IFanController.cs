@@ -1,11 +1,10 @@
-﻿namespace RaspiFanController.Logic
+﻿namespace RaspiFanController.Logic;
+
+public interface IFanController
 {
-    public interface IFanController
-    {
-        bool IsFanRunning { get; }
+    bool IsFanRunning { get; }
 
-        void TurnFanOn();
+    void TurnFanOn();
 
-        void TurnFanOff();
-    }
+    void TurnFanOff();
 }

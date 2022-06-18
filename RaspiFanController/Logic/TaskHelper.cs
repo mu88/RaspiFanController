@@ -2,15 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RaspiFanController.Logic
+namespace RaspiFanController.Logic;
+
+[ExcludeFromCodeCoverage]
+public class TaskHelper : ITaskHelper
 {
-    [ExcludeFromCodeCoverage]
-    public class TaskHelper : ITaskHelper
+    /// <inheritdoc />
+    public Task Delay(int millisecondsDelay, CancellationToken cancellationToken)
     {
-        /// <inheritdoc />
-        public Task Delay(int millisecondsDelay, CancellationToken cancellationToken)
-        {
-            return Task.Delay(millisecondsDelay, cancellationToken);
-        }
+        return Task.Delay(millisecondsDelay, cancellationToken);
     }
 }

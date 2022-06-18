@@ -1,23 +1,22 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace RaspiFanController.Logic
+namespace RaspiFanController.Logic;
+
+[ExcludeFromCodeCoverage]
+public class DevFanController : IFanController
 {
-    [ExcludeFromCodeCoverage]
-    public class DevFanController : IFanController
+    /// <inheritdoc />
+    public bool IsFanRunning { get; private set; }
+
+    /// <inheritdoc />
+    public void TurnFanOn()
     {
-        /// <inheritdoc />
-        public bool IsFanRunning { get; private set; }
+        IsFanRunning = true;
+    }
 
-        /// <inheritdoc />
-        public void TurnFanOn()
-        {
-            IsFanRunning = true;
-        }
-
-        /// <inheritdoc />
-        public void TurnFanOff()
-        {
-            IsFanRunning = false;
-        }
+    /// <inheritdoc />
+    public void TurnFanOff()
+    {
+        IsFanRunning = false;
     }
 }

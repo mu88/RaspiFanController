@@ -1,13 +1,12 @@
 ﻿using System.Threading;
 
-namespace RaspiFanController.Logic
+namespace RaspiFanController.Logic;
+
+public interface ITaskCancellationHelper
 {
-    public interface ITaskCancellationHelper
-    {
-        bool IsCancellationRequested { get; }
+    bool IsCancellationRequested { get; }
 
-        CancellationToken CancellationToken { get; }
+    CancellationToken CancellationToken { get; }
 
-        void SetCancellationToken(CancellationToken cancellationToken);
-    }
+    void SetCancellationToken(CancellationToken cancellationToken);
 }

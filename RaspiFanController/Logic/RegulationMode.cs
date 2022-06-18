@@ -1,8 +1,7 @@
-﻿namespace RaspiFanController.Logic
+﻿namespace RaspiFanController.Logic;
+
+public enum RegulationMode
 {
-    public enum RegulationMode
-    {
-        Automatic,
-        Manual
-    }
+    Automatic,
+    Manual
 }

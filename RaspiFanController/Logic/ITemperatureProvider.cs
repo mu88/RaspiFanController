@@ -1,9 +1,8 @@
-﻿namespace RaspiFanController.Logic
-{
-    public interface ITemperatureProvider
-    {
-        (double,string) GetTemperature();
+﻿namespace RaspiFanController.Logic;
 
-        bool IsPlatformSupported();
-    }
+public interface ITemperatureProvider
+{
+    (double,string) GetTemperature();
+
+    bool IsPlatformSupported();
 }
