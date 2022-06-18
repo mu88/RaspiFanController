@@ -1,5 +1,8 @@
-﻿namespace RaspiFanController.Logic
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace RaspiFanController.Logic
 {
+    [ExcludeFromCodeCoverage]
     public class DevFanController : IFanController
     {
         /// <inheritdoc />

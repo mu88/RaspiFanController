@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace RaspiFanController.Logic
 {
+    [ExcludeFromCodeCoverage]
     public class AppSettings
     {
         public int RefreshMilliseconds { get; set; }
