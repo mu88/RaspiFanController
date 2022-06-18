@@ -1,6 +1,5 @@
 ﻿using System.Device.Gpio;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace RaspiFanController.Logic;

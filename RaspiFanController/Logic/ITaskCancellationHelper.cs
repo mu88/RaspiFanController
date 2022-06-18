@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace RaspiFanController.Logic;
+﻿namespace RaspiFanController.Logic;
 
 public interface ITaskCancellationHelper
 {

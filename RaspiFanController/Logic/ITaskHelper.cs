@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace RaspiFanController.Logic;
+﻿namespace RaspiFanController.Logic;
 
 public interface ITaskHelper
 {
