@@ -45,9 +45,9 @@ You can either grab the prepared [`docker-compose.yml`](/RaspiFanController/dock
 docker run -p 5000:80 -d -v /lib:/lib -v /usr/bin/vcgencmd:/usr/bin/vcgencmd -e LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/gpiomem --restart always --name raspifancontroller mu88/raspifancontroller:latest
 ```
 This will do the following:
-- Mount the necessary directories and executables into the container so that `vcgencmd` works properly.
-- Set the environment variable `LD_LIBRARY_PATH` so that `vcgencmd` works properly.
-- Mount the necessary devices so that `vcgencmd` works properly and the Raspberry's GPIO pins can be controlles from within the container.
+*   Mount the necessary directories and executables into the container so that `vcgencmd` works properly.
+*   Set the environment variable `LD_LIBRARY_PATH` so that `vcgencmd` works properly.
+*   Mount the necessary devices so that `vcgencmd` works properly and the Raspberry's GPIO pins can be controlles from within the container.
 
 ## App configuration
 Within `appsettings.json`, the following app parameters can be controlled:
