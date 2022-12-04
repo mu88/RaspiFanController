@@ -99,7 +99,7 @@ public class RaspiTemperatureController
         while (!TaskCancellationHelper.IsCancellationRequested)
         {
             (CurrentTemperature, Unit) = TemperatureProvider.GetTemperature();
-            Logger.LogDebug($"Current: {CurrentTemperature}°{Unit}");
+            Logger.LogDebug("Current: {CurrentTemperature}°{Unit}", CurrentTemperature, Unit);
 
             if (RegulationMode == RegulationMode.Automatic)
             {
@@ -111,13 +111,10 @@ public class RaspiTemperatureController
                         Logger.LogDebug("Turned fan on in automatic mode");
                     }
                 }
-                else if (CurrentTemperature < LowerTemperatureThreshold)
+                else if (CurrentTemperature < LowerTemperatureThreshold && IsFanRunning)
                 {
-                    if (IsFanRunning)
-                    {
-                        FanController.TurnFanOff();
-                        Logger.LogDebug("Turned fan off in automatic mode");
-                    }
+                    FanController.TurnFanOff();
+                    Logger.LogDebug("Turned fan off in automatic mode");
                 }
             }
 

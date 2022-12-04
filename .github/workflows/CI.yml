@@ -19,15 +19,18 @@ jobs:
         dotnet-version: '7.0'
     - name: Install dependencies
       run: dotnet restore
+    - name: Begin Sonar scan
+      run: |
+        dotnet tool install --global dotnet-sonarscanner
+        dotnet sonarscanner begin /k:mu88_RaspiFanController /o:mu88 /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
     - name: .NET Build
-      run: dotnet build --configuration Release --no-restore
-    - name: .NET Test
-      run: dotnet test --collect:"XPlat Code Coverage" --no-build --configuration Release --settings Tests/coverlet.runsettings
-    - name: Upload code coverage report
-      uses: codacy/codacy-coverage-reporter-action@v1
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: Tests/TestResults/*/coverage.cobertura.xml
+      run: dotnet build --no-restore
+    - name: Test and collect coverage
+      run: |
+        dotnet tool install --global dotnet-coverage
+        dotnet-coverage collect 'dotnet test --no-build' -f xml -o 'coverage.xml'
+    - name: End Sonar scan
+      run: dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx

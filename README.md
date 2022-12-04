@@ -1,8 +1,13 @@
 # Raspberry Pi Fan Controller
 ![CI](https://github.com/mu88/RaspiFanController/workflows/CI/badge.svg)
 ![Release](https://github.com/mu88/RaspiFanController/workflows/Release/badge.svg)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b8f48ccf13bb4b2089c379bf90a11a40)](https://www.codacy.com/gh/mu88/RaspiFanController/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mu88/RaspiFanController&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/b8f48ccf13bb4b2089c379bf90a11a40)](https://www.codacy.com/gh/mu88/RaspiFanController/dashboard?utm_source=github.com&utm_medium=referral&utm_content=mu88/RaspiFanController&utm_campaign=Badge_Coverage)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=bugs)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 
 This repo contains an application to control the fan of a Raspberry Pi in order to avoid overheating. It is based on ASP.NET Core Blazor Server and uses the [.NET Core IoT Library](https://github.com/dotnet/iot) to access the GPIO pins of the Raspberry Pi.
 

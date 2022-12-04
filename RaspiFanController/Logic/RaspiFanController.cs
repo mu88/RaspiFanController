@@ -17,7 +17,7 @@ public class RaspiFanController : IFanController
         var initialValue = gpioController.Read(GpioPin) == PinValue.High;
         IsFanRunning = initialValue;
 
-        logger.LogInformation($"Initial value: {initialValue}");
+        logger.LogInformation("Initial value: {InitialValue}", initialValue);
     }
 
     /// <inheritdoc />

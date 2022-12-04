@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace RaspiFanController.Logic;
 
 [ExcludeFromCodeCoverage]
-public class RaspiTemperatureProvider : ITemperatureProvider
+public partial class RaspiTemperatureProvider : ITemperatureProvider
 {
     public RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger)
     {
@@ -36,10 +36,9 @@ public class RaspiTemperatureProvider : ITemperatureProvider
         var standardOutput = process.StandardOutput.ReadToEnd();
         process.WaitForExit();
 
-        Logger.LogDebug($"Process exited with {process.ExitCode}, output '{standardOutput}'");
+        Logger.LogDebug("Process exited with {ProcessExitCode}, output '{StandardOutput}'", process.ExitCode, standardOutput);
 
-        var regex = new Regex(@"temp=(\d+[,.]\d).{1}(.{1})");
-        var match = regex.Match(standardOutput);
+        var match = TemperatureRegex().Match(standardOutput);
 
         if (process.ExitCode != 0 || !match.Success)
         {
@@ -53,7 +52,7 @@ public class RaspiTemperatureProvider : ITemperatureProvider
         }
         else
         {
-            Logger.LogDebug($"Could not parse double from '{match.Groups[1].Value}'");
+            Logger.LogDebug("Could not parse double from '{Value}'", match.Groups[1].Value);
             return fallbackValue;
         }
     }
@@ -62,7 +61,10 @@ public class RaspiTemperatureProvider : ITemperatureProvider
     public bool IsPlatformSupported()
     {
         var isPlatformSupported = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        Logger.LogDebug($"Is platform supported: {isPlatformSupported}");
+        Logger.LogDebug("Is platform supported: {IsPlatformSupported}", isPlatformSupported);
         return isPlatformSupported;
     }
+    
+    [GeneratedRegex(@"temp=(\d+[,.]\d).{1}(.{1})", RegexOptions.IgnoreCase)]
+    private static partial Regex TemperatureRegex();
 }
