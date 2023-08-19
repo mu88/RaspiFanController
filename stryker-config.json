@@ -1,0 +1,17 @@
+{
+    "stryker-config":
+    {
+        "project": "RaspiFanController",
+        "reporters": [
+            "html",
+            "progress",
+            "dashboard"
+        ],
+        "project-info": {
+            "name": "github.com/mu88/RaspiFanController"
+        },
+        "ignore-methods": [
+            "Logger.Log*"
+        ]
+    }
+}

@@ -4,10 +4,11 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=bugs)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fmu88%2FRaspiFanController%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/mu88/RaspiFanController/main)
 
 This repo contains an application to control the fan of a Raspberry Pi in order to avoid overheating. It is based on ASP.NET Core Blazor Server and uses the [.NET Core IoT Library](https://github.com/dotnet/iot) to access the GPIO pins of the Raspberry Pi.
 
