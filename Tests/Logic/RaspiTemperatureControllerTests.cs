@@ -9,18 +9,16 @@ namespace Tests.Logic;
 
 public class RaspiTemperatureControllerTests
 {
-    [Test]
-    public async Task TurnFanOnInAutomaticMode()
+    [TestCase(61, 40)]
+    [TestCase(61, 61)]
+    public async Task TurnFanOnInAutomaticMode(int currentTemperature, int upperTemperatureThreshold)
     {
         var autoMocker = new AutoMocker();
         autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
-        autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((61, "C"));
+        autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((currentTemperature, "C"));
         autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(false);
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = upperTemperatureThreshold, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         await testee.StartTemperatureMeasurementAsync();
@@ -29,23 +27,30 @@ public class RaspiTemperatureControllerTests
         autoMocker.Verify<ITaskHelper>(x => x.Delay(testee.RefreshMilliseconds, It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Test]
-    public async Task TurnFanOffInAutomaticMode()
+    [TestCase(29, 30, true, true)]
+    [TestCase(29, 30, false, false)]
+    [TestCase(30, 30, true, false)]
+    [TestCase(31, 30, true, false)]
+    [TestCase(29, 30, false, false)]
+    public async Task TurnFanOffInAutomaticMode(int currentTemperature,
+                                                int lowerTemperatureThreshold,
+                                                bool fanIsRunning,
+                                                bool expectedFanToBeTurnedOff)
     {
         var autoMocker = new AutoMocker();
         autoMocker.GetMock<ITaskCancellationHelper>().SetupSequence(x => x.IsCancellationRequested).Returns(false).Returns(true);
-        autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((29, "C"));
-        autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
+        autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((currentTemperature, "C"));
+        autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(fanIsRunning);
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
             .Returns(new AppSettings
             {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
+                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = lowerTemperatureThreshold
             });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         await testee.StartTemperatureMeasurementAsync();
 
-        autoMocker.Verify<IFanController>(x => x.TurnFanOff(), Times.Once);
+        if (expectedFanToBeTurnedOff) autoMocker.Verify<IFanController>(x => x.TurnFanOff(), Times.Once);
         autoMocker.Verify<ITaskHelper>(x => x.Delay(testee.RefreshMilliseconds, It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -57,10 +62,7 @@ public class RaspiTemperatureControllerTests
         autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((39, "C"));
         autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         await testee.StartTemperatureMeasurementAsync();
@@ -73,10 +75,7 @@ public class RaspiTemperatureControllerTests
     {
         var autoMocker = new AutoMocker();
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         // ReSharper disable once UnusedVariable - Reviewed: the result is not necessary, only the call is important
@@ -90,10 +89,7 @@ public class RaspiTemperatureControllerTests
     {
         var autoMocker = new AutoMocker();
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         var result = testee.TrySetUpperTemperatureThreshold(35);
@@ -102,18 +98,16 @@ public class RaspiTemperatureControllerTests
         testee.UpperTemperatureThreshold.Should().Be(35);
     }
 
-    [Test]
-    public void TrySetUpperTemperatureThresholdFailsForTooLowTemperature()
+    [TestCase(10, 30)]
+    [TestCase(30, 30)]
+    public void TrySetUpperTemperatureThresholdFailsForTooLowTemperature(int newUpperTemperatureThreshold, int currentLowerTemperatureThreshold)
     {
         var autoMocker = new AutoMocker();
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = currentLowerTemperatureThreshold });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
-        var result = testee.TrySetUpperTemperatureThreshold(10);
+        var result = testee.TrySetUpperTemperatureThreshold(newUpperTemperatureThreshold);
 
         result.Should().BeFalse();
         testee.UpperTemperatureThreshold.Should().Be(40);
@@ -127,10 +121,7 @@ public class RaspiTemperatureControllerTests
         autoMocker.Setup<ITemperatureProvider, (double, string)>(x => x.GetTemperature()).Returns((39, "C"));
         autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(true);
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         await testee.StartTemperatureMeasurementAsync();
@@ -143,10 +134,7 @@ public class RaspiTemperatureControllerTests
     {
         var autoMocker = new AutoMocker();
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         var result = testee.TrySetLowerTemperatureThreshold(35);
@@ -155,18 +143,16 @@ public class RaspiTemperatureControllerTests
         testee.LowerTemperatureThreshold.Should().Be(35);
     }
 
-    [Test]
-    public void TrySetLowerTemperatureThresholdFailsForTooHighTemperature()
+    [TestCase(50, 40)]
+    [TestCase(50, 50)]
+    public void TrySetLowerTemperatureThresholdFailsForTooHighTemperature(int newLowerTemperatureThreshold, int currentUpperTemperatureThreshold)
     {
         var autoMocker = new AutoMocker();
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = currentUpperTemperatureThreshold, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
-        var result = testee.TrySetLowerTemperatureThreshold(50);
+        var result = testee.TrySetLowerTemperatureThreshold(newLowerTemperatureThreshold);
 
         result.Should().BeFalse();
         testee.LowerTemperatureThreshold.Should().Be(30);
@@ -177,11 +163,9 @@ public class RaspiTemperatureControllerTests
     {
         var autoMocker = new AutoMocker();
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
+        testee.SetManualTemperatureRegulation(false);
 
         testee.SetAutomaticTemperatureRegulation();
 
@@ -197,10 +181,7 @@ public class RaspiTemperatureControllerTests
         var autoMocker = new AutoMocker();
         autoMocker.Setup<IFanController, bool>(x => x.IsFanRunning).Returns(isFanRunning);
         autoMocker.Setup<IOptionsMonitor<AppSettings>, AppSettings>(x => x.CurrentValue)
-            .Returns(new AppSettings
-            {
-                RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30
-            });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = autoMocker.CreateInstance<RaspiTemperatureController>();
 
         testee.SetManualTemperatureRegulation(fanShouldRun);
@@ -209,24 +190,16 @@ public class RaspiTemperatureControllerTests
         if (fanShouldRun)
         {
             if (isFanRunning)
-            {
                 autoMocker.Verify<IFanController>(x => x.TurnFanOn(), Times.Never);
-            }
             else
-            {
                 autoMocker.Verify<IFanController>(x => x.TurnFanOn(), Times.Once);
-            }
         }
         else
         {
             if (isFanRunning)
-            {
                 autoMocker.Verify<IFanController>(x => x.TurnFanOff(), Times.Once);
-            }
             else
-            {
                 autoMocker.Verify<IFanController>(x => x.TurnFanOff(), Times.Never);
-            }
         }
     }
 }
