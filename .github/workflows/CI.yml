@@ -20,7 +20,7 @@ jobs:
     - name: Begin Sonar scan
       run: |
         dotnet tool install --global dotnet-sonarscanner
-        dotnet sonarscanner begin /k:mu88_RaspiFanController /o:mu88 /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /d:sonar.cs.opencover.reportsPaths=Tests/coverage.opencover.xml
+        dotnet sonarscanner begin /k:mu88_RaspiFanController /o:mu88 /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /d:sonar.cs.opencover.reportsPaths=Tests/coverage.opencover.xml /s:$GITHUB_WORKSPACE/SonarQube.Analysis.xml
     - name: .NET Build
       run: dotnet build --no-restore
     - name: Test and collect coverage
