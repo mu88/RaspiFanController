@@ -5,6 +5,8 @@ namespace RaspiFanController.Logic;
 [ExcludeFromCodeCoverage]
 public class AppSettings
 {
+    public const string SectionName = "AppSettings";
+
     public int RefreshMilliseconds { get; set; }
 
     public int UpperTemperatureThreshold { get; set; }
