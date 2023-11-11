@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <ContainerRepository>mu88/raspifancontroller</ContainerRepository>
   </PropertyGroup>
 
   <ItemGroup>
