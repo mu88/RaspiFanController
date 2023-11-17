@@ -2,9 +2,8 @@ name: Release
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-      - '*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - '*'
 
 jobs:
   Release:
@@ -28,9 +27,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build Docker and Push
-      run: |
-        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch x64 /t:PublishContainer -c Release '-p:ContainerImageTags="${{ github.ref_name }};latest"' -p:ContainerRegistry=registry.hub.docker.com
-        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer -c Release '-p:ContainerImageTags="${{ github.ref_name }};latest"' -p:ContainerRegistry=registry.hub.docker.com
+      run: dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer '-p:ContainerImageTags="${{ env.VERSION }};latest"' -p:ContainerRegistry=registry.hub.docker.com
     - name: .NET Publish
       run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm64 -c Release /p:PublishSingleFile=true --self-contained
     - name: Create artifact
@@ -44,7 +41,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        release_name: Release ${{ env.VERSION }}
         draft: false
         prerelease: false
     - name: Upload asset to GitHub Release
