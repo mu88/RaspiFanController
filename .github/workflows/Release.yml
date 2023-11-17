@@ -26,6 +26,11 @@ jobs:
         registry: registry.hub.docker.com
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Write release version
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo Version: $VERSION
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
     - name: Build Docker and Push
       run: dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer '-p:ContainerImageTags="${{ env.VERSION }};latest"' -p:ContainerRegistry=registry.hub.docker.com
     - name: .NET Publish
