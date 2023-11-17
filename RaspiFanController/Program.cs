@@ -23,7 +23,7 @@ else
 
 var app = builder.Build();
 
-var appPathBase = builder.Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>().AppPathBase;
+var appPathBase = builder.Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>()?.AppPathBase;
 if (!string.IsNullOrEmpty(appPathBase)) app.UsePathBase(appPathBase);
 
 if (app.Environment.IsDevelopment())

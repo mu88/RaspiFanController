@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-  pull_request:
+    tags-ignore:
+      - '**'
+    branches:
+      - '**'
 
 jobs:
   CI:
@@ -12,7 +15,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0'
+        dotnet-version: '8.0'
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -31,6 +34,4 @@ jobs:
     - name: End Sonar scan
       run: dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
     - name: Build Docker
-      run: |
-        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch x64 /t:PublishContainer -c Release
-        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer -c Release
+      run: dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer

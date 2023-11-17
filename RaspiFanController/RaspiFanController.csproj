@@ -1,21 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <ContainerRepository>mu88/raspifancontroller</ContainerRepository>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Iot.Device.Bindings" Version="3.0.0" />
     <PackageReference Include="System.Device.Gpio" Version="3.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="appsettings.*.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
-
 </Project>

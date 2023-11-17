@@ -15,5 +15,5 @@ public class AppSettings
 
     public int GpioPin { get; set; }
 
-    public string AppPathBase { get; set; }
+    public string AppPathBase { get; set; } = string.Empty;
 }

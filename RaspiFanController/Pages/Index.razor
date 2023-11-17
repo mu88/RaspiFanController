@@ -148,7 +148,7 @@
 
     private bool AllowManualControl { get; set; }
 
-    private string Temperature { get; set; }
+    private string Temperature { get; set; } = string.Empty;
 
     private int UpperTemperatureThreshold { get; set; }
 
@@ -158,11 +158,11 @@
 
     private int MaxForLowerThreshold => UpperTemperatureThreshold - 1;
 
-    private string Unit { get; set; }
+    private string Unit { get; set; } = string.Empty;
 
     private bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-    private string ErrorMessage { get; set; }
+    private string ErrorMessage { get; set; } = string.Empty;
 
     private TimeSpan Uptime { get; set; }
 
@@ -211,7 +211,7 @@
 
     private void UpperTemperatureThresholdChanged(ChangeEventArgs changeEventArgs)
     {
-        if (int.TryParse(changeEventArgs?.Value?.ToString(), out var result))
+        if (int.TryParse(changeEventArgs.Value?.ToString(), out var result))
         {
             ErrorMessage = string.Empty;
             if (!RaspiTemperatureController.TrySetUpperTemperatureThreshold(result))
@@ -227,7 +227,7 @@
 
     private void LowerTemperatureThresholdChanged(ChangeEventArgs changeEventArgs)
     {
-        if (int.TryParse(changeEventArgs?.Value?.ToString(), out var result))
+        if (int.TryParse(changeEventArgs.Value?.ToString(), out var result))
         {
             ErrorMessage = string.Empty;
             if (!RaspiTemperatureController.TrySetLowerTemperatureThreshold(result))
@@ -243,13 +243,13 @@
 
     private void FanIsRunningChanged(ChangeEventArgs changeEventArgs)
     {
-        if (bool.TryParse(changeEventArgs?.Value?.ToString(), out var result))
+        if (bool.TryParse(changeEventArgs.Value?.ToString(), out var result))
         {
             RaspiTemperatureController.SetManualTemperatureRegulation(result);
         }
         else
         {
-    // Fallback to avoid overheating
+            // Fallback to avoid overheating
             RaspiTemperatureController.SetManualTemperatureRegulation(true);
         }
     }

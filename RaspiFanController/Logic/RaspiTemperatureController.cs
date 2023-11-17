@@ -2,56 +2,42 @@
 
 namespace RaspiFanController.Logic;
 
-public class RaspiTemperatureController
+public class RaspiTemperatureController(ITemperatureProvider temperatureProvider,
+                                        IFanController fanController,
+                                        ITaskCancellationHelper taskCancellationHelper,
+                                        ITaskHelper taskHelper,
+                                        ILogger<RaspiTemperatureController> logger,
+                                        IOptionsMonitor<AppSettings> settings)
 {
-    public RaspiTemperatureController(ITemperatureProvider temperatureProvider,
-                                      IFanController fanController,
-                                      ITaskCancellationHelper taskCancellationHelper,
-                                      ITaskHelper taskHelper,
-                                      ILogger<RaspiTemperatureController> logger,
-                                      IOptionsMonitor<AppSettings> settings)
-    {
-        TemperatureProvider = temperatureProvider;
-        FanController = fanController;
-        RefreshMilliseconds = settings.CurrentValue.RefreshMilliseconds;
-        UpperTemperatureThreshold = settings.CurrentValue.UpperTemperatureThreshold;
-        LowerTemperatureThreshold = settings.CurrentValue.LowerTemperatureThreshold;
-        RegulationMode = RegulationMode.Automatic;
-        StartTime = DateTime.Now;
-        TaskCancellationHelper = taskCancellationHelper;
-        TaskHelper = taskHelper;
-        Logger = logger;
-    }
-
     public bool IsPlatformSupported => TemperatureProvider.IsPlatformSupported();
 
-    public int RefreshMilliseconds { get; }
+    public int RefreshMilliseconds { get; } = settings.CurrentValue.RefreshMilliseconds;
 
     public bool IsFanRunning => FanController.IsFanRunning;
 
     public TimeSpan Uptime => DateTime.Now - StartTime;
 
-    public int LowerTemperatureThreshold { get; private set; }
+    public int LowerTemperatureThreshold { get; private set; } = settings.CurrentValue.LowerTemperatureThreshold;
 
     public double CurrentTemperature { get; private set; }
 
-    public string Unit { get; private set; }
+    public string Unit { get; private set; } = string.Empty;
 
-    public RegulationMode RegulationMode { get; private set; }
+    public RegulationMode RegulationMode { get; private set; } = RegulationMode.Automatic;
 
-    public int UpperTemperatureThreshold { get; private set; }
+    public int UpperTemperatureThreshold { get; private set; } = settings.CurrentValue.UpperTemperatureThreshold;
 
-    private ITemperatureProvider TemperatureProvider { get; }
+    private ITemperatureProvider TemperatureProvider { get; } = temperatureProvider;
 
-    private IFanController FanController { get; }
+    private IFanController FanController { get; } = fanController;
 
-    private ITaskCancellationHelper TaskCancellationHelper { get; }
+    private ITaskCancellationHelper TaskCancellationHelper { get; } = taskCancellationHelper;
 
-    private ITaskHelper TaskHelper { get; }
+    private ITaskHelper TaskHelper { get; } = taskHelper;
 
-    private ILogger<RaspiTemperatureController> Logger { get; }
+    private ILogger<RaspiTemperatureController> Logger { get; } = logger;
 
-    private DateTime StartTime { get; }
+    private DateTime StartTime { get; } = DateTime.Now;
 
     public void SetAutomaticTemperatureRegulation()
     {
