@@ -6,8 +6,5 @@ namespace RaspiFanController.Logic;
 public class TaskHelper : ITaskHelper
 {
     /// <inheritdoc />
-    public Task Delay(int millisecondsDelay, CancellationToken cancellationToken)
-    {
-        return Task.Delay(millisecondsDelay, cancellationToken);
-    }
+    public Task DelayAsync(int millisecondsDelay, CancellationToken cancellationToken) => Task.Delay(millisecondsDelay, cancellationToken);
 }

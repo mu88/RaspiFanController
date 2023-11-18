@@ -3,23 +3,12 @@
 namespace RaspiFanController.Logic;
 
 [ExcludeFromCodeCoverage]
-public class Worker : BackgroundService
+public class Worker(RaspiTemperatureController raspiTemperatureController, ITaskCancellationHelper taskCancellationHelper) : BackgroundService
 {
-    /// <inheritdoc />
-    public Worker(RaspiTemperatureController raspiTemperatureController, ITaskCancellationHelper taskCancellationHelper)
-    {
-        RaspiTemperatureController = raspiTemperatureController;
-        TaskCancellationHelper = taskCancellationHelper;
-    }
-
-    private RaspiTemperatureController RaspiTemperatureController { get; }
-
-    private ITaskCancellationHelper TaskCancellationHelper { get; }
-
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        TaskCancellationHelper.SetCancellationToken(stoppingToken);
-        await RaspiTemperatureController.StartTemperatureMeasurementAsync();
+        taskCancellationHelper.SetCancellationToken(stoppingToken);
+        await raspiTemperatureController.StartTemperatureMeasurementAsync();
     }
 }

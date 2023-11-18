@@ -1,4 +1,5 @@
-﻿using RaspiFanController.Logic;
+﻿using System.Diagnostics.CodeAnalysis;
+using RaspiFanController.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,3 +40,6 @@ app.MapFallbackToPage("/_Host");
 app.MapControllers();
 
 app.Run();
+
+[ExcludeFromCodeCoverage]
+public partial class Program;

@@ -7,15 +7,8 @@ using System.Text.RegularExpressions;
 namespace RaspiFanController.Logic;
 
 [ExcludeFromCodeCoverage]
-public partial class RaspiTemperatureProvider : ITemperatureProvider
+public partial class RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger) : ITemperatureProvider
 {
-    public RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger)
-    {
-        Logger = logger;
-    }
-
-    private ILogger<RaspiTemperatureProvider> Logger { get; }
-
     /// <inheritdoc />
     public (double, string) GetTemperature()
     {
@@ -36,13 +29,13 @@ public partial class RaspiTemperatureProvider : ITemperatureProvider
         var standardOutput = process.StandardOutput.ReadToEnd();
         process.WaitForExit();
 
-        Logger.LogDebug("Process exited with {ProcessExitCode}, output '{StandardOutput}'", process.ExitCode, standardOutput);
+        logger.LogDebug("Process exited with {ProcessExitCode}, output '{StandardOutput}'", process.ExitCode, standardOutput);
 
         var match = TemperatureRegex().Match(standardOutput);
 
         if (process.ExitCode != 0 || !match.Success)
         {
-            Logger.LogDebug("No Regex match");
+            logger.LogDebug("No Regex match");
             return fallbackValue;
         }
 
@@ -50,18 +43,16 @@ public partial class RaspiTemperatureProvider : ITemperatureProvider
         {
             return (result, match.Groups[2].Value);
         }
-        else
-        {
-            Logger.LogDebug("Could not parse double from '{Value}'", match.Groups[1].Value);
-            return fallbackValue;
-        }
+
+        logger.LogDebug("Could not parse double from '{Value}'", match.Groups[1].Value);
+        return fallbackValue;
     }
 
     /// <inheritdoc />
     public bool IsPlatformSupported()
     {
         var isPlatformSupported = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        Logger.LogDebug("Is platform supported: {IsPlatformSupported}", isPlatformSupported);
+        logger.LogDebug("Is platform supported: {IsPlatformSupported}", isPlatformSupported);
         return isPlatformSupported;
     }
     

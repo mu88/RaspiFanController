@@ -2,5 +2,5 @@
 
 public interface ITaskHelper
 {
-    Task Delay(int millisecondsDelay, CancellationToken cancellationToken);
+    Task DelayAsync(int millisecondsDelay, CancellationToken cancellationToken);
 }

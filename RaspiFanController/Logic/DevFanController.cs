@@ -9,14 +9,8 @@ public class DevFanController : IFanController
     public bool IsFanRunning { get; private set; }
 
     /// <inheritdoc />
-    public void TurnFanOn()
-    {
-        IsFanRunning = true;
-    }
+    public void TurnFanOn() => IsFanRunning = true;
 
     /// <inheritdoc />
-    public void TurnFanOff()
-    {
-        IsFanRunning = false;
-    }
+    public void TurnFanOff() => IsFanRunning = false;
 }

@@ -13,6 +13,7 @@
         },
         "ignore-methods": [
             "Logger.Log*"
-        ]
+        ],
+        "mutate": ["!**/Program.cs"]
     }
 }

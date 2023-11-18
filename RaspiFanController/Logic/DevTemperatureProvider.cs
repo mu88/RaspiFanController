@@ -6,14 +6,8 @@ namespace RaspiFanController.Logic;
 public class DevTemperatureProvider : ITemperatureProvider
 {
     /// <inheritdoc />
-    public (double, string) GetTemperature()
-    {
-        return (30 + 30 * new Random().NextDouble(), "C");
-    }
+    public (double, string) GetTemperature() => (30 + 30 * new Random().NextDouble(), "C");
 
     /// <inheritdoc />
-    public bool IsPlatformSupported()
-    {
-        return true;
-    }
+    public bool IsPlatformSupported() => true;
 }

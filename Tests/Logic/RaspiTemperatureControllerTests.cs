@@ -24,7 +24,7 @@ public class RaspiTemperatureControllerTests
         await testee.StartTemperatureMeasurementAsync();
 
         autoMocker.Verify<IFanController>(x => x.TurnFanOn(), Times.Once);
-        autoMocker.Verify<ITaskHelper>(x => x.Delay(testee.RefreshMilliseconds, It.IsAny<CancellationToken>()), Times.Once);
+        autoMocker.Verify<ITaskHelper>(x => x.DelayAsync(testee.RefreshMilliseconds, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [TestCase(29, 30, true, true)]
@@ -51,7 +51,7 @@ public class RaspiTemperatureControllerTests
         await testee.StartTemperatureMeasurementAsync();
 
         if (expectedFanToBeTurnedOff) autoMocker.Verify<IFanController>(x => x.TurnFanOff(), Times.Once);
-        autoMocker.Verify<ITaskHelper>(x => x.Delay(testee.RefreshMilliseconds, It.IsAny<CancellationToken>()), Times.Once);
+        autoMocker.Verify<ITaskHelper>(x => x.DelayAsync(testee.RefreshMilliseconds, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
