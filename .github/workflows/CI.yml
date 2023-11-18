@@ -32,6 +32,6 @@ jobs:
     - name: Test and collect coverage
       run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: End Sonar scan
-      run: dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
+      run: dotnet sonarscanner end /d:sonar.token=${{ secrets.SONAR_TOKEN }}
     - name: Build Docker
       run: dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer
