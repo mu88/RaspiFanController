@@ -32,7 +32,9 @@ jobs:
         echo Version: $VERSION
         echo "VERSION=$VERSION" >> $GITHUB_ENV
     - name: Build Docker and Push
-      run: dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer '-p:ContainerImageTags="${{ env.VERSION }};latest"' -p:ContainerRegistry=registry.hub.docker.com
+      run: |
+        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer '-p:ContainerImageTags="${{ env.VERSION }};latest"' -p:ContainerRegistry=registry.hub.docker.com
+        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer '-p:ContainerImageTags="${{ env.VERSION }}-chiseled;latest-chiseled"' -p:ContainerRegistry=registry.hub.docker.com -p:ContainerFamily=jammy-chiseled
     - name: .NET Publish
       run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm64 /p:PublishSingleFile=true --self-contained
     - name: Create artifact

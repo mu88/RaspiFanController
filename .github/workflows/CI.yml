@@ -34,4 +34,6 @@ jobs:
     - name: End Sonar scan
       run: dotnet sonarscanner end /d:sonar.token=${{ secrets.SONAR_TOKEN }}
     - name: Build Docker
-      run: dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer
+      run: |
+        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer
+        dotnet publish RaspiFanController/RaspiFanController.csproj --os linux --arch arm64 /t:PublishContainer -p:ContainerFamily=jammy-chiseled
