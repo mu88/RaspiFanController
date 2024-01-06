@@ -13,7 +13,4 @@
     </Content>
     <Content Update="appsettings.*.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
-  <ItemGroup>
-    <ContainerEnvironmentVariable Include="APP_UID" Value="root" />
-  </ItemGroup>
 </Project>
