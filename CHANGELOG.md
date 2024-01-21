@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.1.0"></a>
+## [3.1.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v3.1.0) (2024-01-21)
+
+### Features
+
+* use built-in temperature provider ([d1babb8](https://www.github.com/mu88/RaspiFanController/commit/d1babb836cc8dc88d16e598c863b63b1eb54bbf0))
+
 <a name="3.0.3"></a>
 ## [3.0.3](https://www.github.com/mu88/RaspiFanController/releases/tag/v3.0.3) (2024-01-06)
 
