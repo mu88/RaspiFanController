@@ -18,7 +18,7 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    builder.Services.AddSingleton<ITemperatureProvider, RaspiTemperatureProvider2>();
+    builder.Services.AddSingleton<ITemperatureProvider, RaspiTemperatureProvider>();
     builder.Services.AddSingleton<IFanController, RaspiFanController.Logic.RaspiFanController>();
 }
 
