@@ -10,6 +10,6 @@ services:
     ports:
       - 127.0.0.1:5000:8080
     volumes:
-      - /sys/class/thermal/thermal_zone0:/sys/class/thermal/thermal_zone0 # CpuTemperature needs this
+      - /sys/class/thermal/thermal_zone0:/sys/class/thermal/thermal_zone0:ro # CpuTemperature needs this
     devices:
       - /dev/gpiomem
