@@ -11,7 +11,7 @@ public class RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger) 
     public (double, string) GetTemperature()
     {
         var cpuTemperature = new CpuTemperature();
-        var temperatureObject = cpuTemperature.ReadTemperatures().First();
+        var temperatureObject = cpuTemperature.ReadTemperatures()[0];
         return !double.IsNaN(temperatureObject.Temperature.DegreesCelsius) ? (temperatureObject.Temperature.DegreesCelsius, "C") : (double.NaN, "#");
     }
 
