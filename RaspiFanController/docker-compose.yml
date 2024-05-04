@@ -1,12 +1,11 @@
-﻿version: '3'
-services:
+﻿services:
   raspifancontroller:
     container_name: raspifancontroller
-    user: "64198:997" # group 997 is necessary to access the GPIO pins
+    user: "1654:997" # group 997 is necessary to access the GPIO pins
     environment:
       - AppSettings__UpperTemperatureThreshold=70
       - AppSettings__LowerTemperatureThreshold=55
-    image: mu88/raspifancontroller:latest
+    image: mu88/raspifancontroller:latest-chiseled
     ports:
       - 127.0.0.1:5000:8080
     volumes:
