@@ -19,7 +19,7 @@ I wrote the following blog posts describing the complete ceremony a bit more in 
 *   [Is .NET Core cool enough to cool a Raspberry Pi? - Part 2](https://mu88.github.io/2020/04/24/Raspi-Fan-Controller_p1)
 
 ## Local development
-The app targets .NET 6. I've integrated the two classes `Logic\DevFanController.cs` and `Logic\DevTemperatureProvider.cs` for development purposes: they're simulating the temperature measurement and fan controlling when running the app in development mode.
+I've integrated the two classes `Logic\DevFanController.cs` and `Logic\DevTemperatureProvider.cs` for development purposes: they're simulating the temperature measurement and fan controlling when running the app in development mode.
 
 ## Deployment
 The app is deployed both as a [self-contained executable](https://docs.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained) and the Docker image [`mu88/raspifancontroller`](https://hub.docker.com/repository/docker/mu88/raspifancontroller).
@@ -27,12 +27,12 @@ The app is deployed both as a [self-contained executable](https://docs.microsoft
 ### Self-contained executable
 Use the following command to generate the app:
 ```shell
-dotnet publish -r linux-arm64 -c Release /p:PublishSingleFile=true --self-contained
+dotnet publish -r linux-arm64 /p:PublishSingleFile=true --self-contained
 ```
 
 The following command copies the build results:
 ```shell
-scp -r E:\Development\GitHub\RaspiFanController\RaspiFanController\bin\Release\net6.0\linux-arm64\publish user@yourRaspi:/tmp/RaspiFanController/
+scp -r E:\Development\GitHub\RaspiFanController\RaspiFanController\bin\Release\net*.0\linux-arm64\publish user@yourRaspi:/tmp/RaspiFanController/
 ```
 
 On the Raspberry, we have to allow the app to be executed:
@@ -48,12 +48,11 @@ sudo /tmp/RaspiFanController/RaspiFanController
 ### Docker
 You can either grab the prepared [`docker-compose.yml`](/RaspiFanController/docker-compose.yml) or start a new container with the following command:
 ```shell
-docker run -p 5000:80 -d -v /lib:/lib -v /usr/bin/vcgencmd:/usr/bin/vcgencmd -e LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/gpiomem --restart always --name raspifancontroller mu88/raspifancontroller:latest
+docker run -p 8080:8080 -d -v /sys/class/thermal/thermal_zone0:/sys/class/thermal/thermal_zone0:ro --device /dev/gpiomem --restart always --name raspifancontroller mu88/raspifancontroller:latest
 ```
 This will do the following:
-*   Mount the necessary directories and executables into the container so that `vcgencmd` works properly.
-*   Set the environment variable `LD_LIBRARY_PATH` so that `vcgencmd` works properly.
-*   Mount the necessary devices so that `vcgencmd` works properly and the Raspberry's GPIO pins can be controlles from within the container.
+*   Mount the necessary directory so that the file containing the current temperature can be accessed by the .NET IoT library. 
+*   Mount the necessary device so that the Raspberry's GPIO pins can be controlled from within the container.
 
 ## App configuration
 Within `appsettings.json`, the following app parameters can be controlled:
@@ -64,7 +63,7 @@ Within `appsettings.json`, the following app parameters can be controlled:
 *   `GpioPin` → The GPIO pin that will control the transistor and therefore turning the fan on/off.
 *   `AppPathBase` → This path will be used as the app's path base, see [`UsePathBase()`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.usepathbaseextensions.usepathbase?f1url=https%3A%2F%2Fmsdn.microsoft.com%2Fquery%2Fdev16.query%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(Microsoft.AspNetCore.Builder.UsePathBaseExtensions.UsePathBase);k(DevLang-csharp)%26rd%3Dtrue%26f%3D255%26MSPPError%3D-2147217396&view=aspnetcore-3.1).
 
-These parameters are read on app startup. When the app is running, they can be overridden via http://localhost:5000/cool, but they won't be written to `appsettings.json`.
+These parameters are read on app startup. When the app is running, they can be overridden via http://localhost:8080/cool, but they won't be written to `appsettings.json`.
 
 ## Supported Platforms
 The app is running on my Raspberry Pi 4 Model B using Raspberry Pi OS x64.
