@@ -34,8 +34,8 @@ public class RaspiTemperatureControllerTests
     }
 
     [TestCase(29, 30, true, true)]
-    [TestCase(29, 30, false, false)]
     [TestCase(30, 30, true, false)]
+    [TestCase(29, 30, false, false)]
     [TestCase(31, 30, true, false)]
     [TestCase(29, 30, false, false)]
     public async Task TurnFanOffInAutomaticMode(int currentTemperature,
@@ -52,7 +52,7 @@ public class RaspiTemperatureControllerTests
 
         await testee.StartTemperatureMeasurementAsync();
 
-        if (expectedFanToBeTurnedOff) _fanControllerMock.Received(1).TurnFanOff();
+        _fanControllerMock.Received(expectedFanToBeTurnedOff ? 1 : 0).TurnFanOff();
         await _taskHelperMock.Received(1).DelayAsync(testee.RefreshMilliseconds, Arg.Any<CancellationToken>());
     }
 
