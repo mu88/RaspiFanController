@@ -31,12 +31,19 @@ else
 var app = builder.Build();
 
 var appPathBase = builder.Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>()?.AppPathBase;
-if (!string.IsNullOrEmpty(appPathBase)) app.UsePathBase(appPathBase);
+if (!string.IsNullOrEmpty(appPathBase))
+{
+    app.UsePathBase(appPathBase);
+}
 
 if (app.Environment.IsDevelopment())
+{
     app.UseDeveloperExceptionPage();
+}
 else
+{
     app.UseExceptionHandler("/Error");
+}
 
 app.UseStaticFiles();
 app.UseRouting();
@@ -45,7 +52,7 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
 
 static void ConfigureOpenTelemetry(IHostApplicationBuilder builder)
 {
@@ -64,11 +71,18 @@ static void ConfigureOpenTelemetry(IHostApplicationBuilder builder)
                 .AddAspNetCoreInstrumentation()
                 .AddRuntimeInstrumentation();
         })
-        .WithTracing(tracing => { tracing.AddAspNetCoreInstrumentation(); });
+        .WithTracing(tracing =>
+        {
+            tracing.AddAspNetCoreInstrumentation();
+        });
 
     var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
-    if (useOtlpExporter) builder.Services.AddOpenTelemetry().UseOtlpExporter();
+    if (useOtlpExporter)
+    {
+        builder.Services.AddOpenTelemetry().UseOtlpExporter();
+    }
 }
 
 [ExcludeFromCodeCoverage]
+[SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1106:Code should not contain empty statements", Justification = "Necessary for coverage")]
 public partial class Program;

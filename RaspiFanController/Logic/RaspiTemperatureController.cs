@@ -2,12 +2,13 @@
 
 namespace RaspiFanController.Logic;
 
-public class RaspiTemperatureController(ITemperatureProvider temperatureProvider,
-                                        IFanController fanController,
-                                        ITaskCancellationHelper taskCancellationHelper,
-                                        ITaskHelper taskHelper,
-                                        ILogger<RaspiTemperatureController> logger,
-                                        IOptionsMonitor<AppSettings> settings)
+public class RaspiTemperatureController(
+    ITemperatureProvider temperatureProvider,
+    IFanController fanController,
+    ITaskCancellationHelper taskCancellationHelper,
+    ITaskHelper taskHelper,
+    ILogger<RaspiTemperatureController> logger,
+    IOptionsMonitor<AppSettings> settings)
 {
     public bool IsPlatformSupported => temperatureProvider.IsPlatformSupported();
 
@@ -23,12 +24,12 @@ public class RaspiTemperatureController(ITemperatureProvider temperatureProvider
 
     // Stryker disable all : don't mutate default initialization
     public string Unit { get; private set; } = string.Empty;
-    // Stryker restore all
 
+    // Stryker restore all
     public RegulationMode RegulationMode { get; private set; } = RegulationMode.Automatic;
 
     public int UpperTemperatureThreshold { get; private set; } = settings.CurrentValue.UpperTemperatureThreshold;
-    
+
     private DateTime StartTime { get; } = DateTime.Now;
 
     public void SetAutomaticTemperatureRegulation()
