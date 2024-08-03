@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="3.3.0"></a>
+## [3.3.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v3.3.0) (2024-08-03)
+
+### Features
+
+* replace OpenTelemetry and multi-manifest Docker image logic with NuGet package mu88.Shared ([283aac9](https://www.github.com/mu88/RaspiFanController/commit/283aac9c434a196fa6c795d2242aedcfe26943db))
+
 <a name="3.2.1"></a>
 ## [3.2.1](https://www.github.com/mu88/RaspiFanController/releases/tag/v3.2.1) (2024-06-29)
 
