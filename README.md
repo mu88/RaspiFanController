@@ -1,6 +1,8 @@
 # Raspberry Pi Fan Controller
-![CI](https://github.com/mu88/RaspiFanController/workflows/CI/badge.svg)
-![Release](https://github.com/mu88/RaspiFanController/workflows/Release/badge.svg)
+
+![Combined CI / Release](https://github.com/mu88/RaspiFanController/actions/workflows/CI_CD.yml/badge.svg)
+![Mutation testing](https://github.com/mu88/RaspiFanController/actions/workflows/Mutation%20Testing.yml/badge.svg)
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/mu88/raspifancontroller?logo=docker&sort=semver)  
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
