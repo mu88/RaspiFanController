@@ -11,13 +11,10 @@
     <PackageVersion Include="Iot.Device.Bindings" Version="3.2.0" />
     <PackageVersion Include="Meziantou.Analyzer" Version="2.0.162" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageVersion Include="mu88.Shared" Version="0.2.2"/>
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="nunit" Version="4.1.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="System.Device.Gpio" Version="3.2.0" />
   </ItemGroup>
