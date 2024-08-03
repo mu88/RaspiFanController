@@ -10,6 +10,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{409DE09D-9201-4BCC-A8B5-6F9D9E12E197}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		.editorconfig = .editorconfig
+		CHANGELOG.md = CHANGELOG.md
+		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+		renovate.json = renovate.json
+		stryker-config.json = stryker-config.json
+		.github\workflows\CI_CD.yml = .github\workflows\CI_CD.yml
 	EndProjectSection
 EndProject
 Global
