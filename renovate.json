@@ -42,5 +42,14 @@
       ],
       "enabled": false
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^.*\\.csproj$"],
+      "matchStrings": ["<ContainerBaseImage>(?<currentValue>.*?)<\\/ContainerBaseImage>"],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "docker"
+    }
   ]
 }
