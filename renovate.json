@@ -1,13 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>mu88/renovate-config"],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "fileMatch": ["^.*\\.csproj$"],
-      "matchStrings": ["<ContainerBaseImage>(?<currentValue>.*?)<\\/ContainerBaseImage>"],
-      "datasourceTemplate": "docker",
-      "depNameTemplate": "docker"
-    }
-  ]
+  "extends": ["github>mu88/renovate-config"]
 }
