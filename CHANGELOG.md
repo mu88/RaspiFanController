@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="4.0.0"></a>
+## [4.0.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v4.0.0) (2024-12-06)
+
+### Features
+
+* **deps:** upgrade to .NET 9 ([3cce48d](https://www.github.com/mu88/RaspiFanController/commit/3cce48dcc7220166705e0bc37910f5035fb7c45b))
+
+### Breaking Changes
+
+* **deps:** upgrade to .NET 9 ([3cce48d](https://www.github.com/mu88/RaspiFanController/commit/3cce48dcc7220166705e0bc37910f5035fb7c45b))
+
 <a name="3.3.0"></a>
 ## [3.3.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v3.3.0) (2024-08-03)
 
