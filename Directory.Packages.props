@@ -17,8 +17,10 @@
     <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="System.Device.Gpio" Version="3.2.0" />
+    <PackageVersion Include="Testcontainers" Version="4.0.0"/>
   </ItemGroup>
   <ItemGroup>
-    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8g4q-xg66-9fp4"/> <!-- Since it's an internal app only, I consider this okay -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8g4q-xg66-9fp4"/>
+    <!-- Since it's an internal app only, I consider this okay -->
   </ItemGroup>
 </Project>
