@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureOpenTelemetry("RaspiFanController");
 
+builder.Services.AddHealthChecks();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHostedService<Worker>();
@@ -48,6 +49,7 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
 await app.RunAsync();
 
