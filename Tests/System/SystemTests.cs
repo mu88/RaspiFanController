@@ -5,7 +5,7 @@ using DotNet.Testcontainers.Networks;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests;
+namespace Tests.System;
 
 [Category("System")]
 public class SystemTests
@@ -26,6 +26,7 @@ public class SystemTests
         var logValues = await container.GetLogsAsync();
         Console.WriteLine($"Stderr:{Environment.NewLine}{logValues.Stderr}");
         Console.WriteLine($"Stdout:{Environment.NewLine}{logValues.Stdout}");
+        logValues.Stdout.Should().NotContain("warn:");
         healthCheckResponse.Should().BeSuccessful();
         (await healthCheckResponse.Content.ReadAsStringAsync()).Should().Be("Healthy");
         appResponse.Should().BeSuccessful();
