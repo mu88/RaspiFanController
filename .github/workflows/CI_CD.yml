@@ -8,15 +8,13 @@ on:
     branches:
       - '**'
 
-env:
-  IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
-
 jobs:
   ci_cd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: CI/CD
+        id: mu88-ci-cd
         uses: mu88/github-actions/ci-cd@0.1
         with:
           sonar-key: 'mu88_RaspiFanController'
@@ -27,44 +25,38 @@ jobs:
           registry: registry.hub.docker.com
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Write release version
-        if: ${{ env.IS_RELEASE == 'true' }}
-        run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          echo Version: $VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Build and push Docker non-release
-        if: ${{ env.IS_RELEASE != 'true' }}
+        if: ${{ steps.mu88-ci-cd.outputs.is-release != 'true' }}
         run: |
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="dev"' -p:ContainerRegistry=registry.hub.docker.com
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="dev-chiseled"' -p:ContainerFamily=jammy-chiseled -p:ContainerRegistry=registry.hub.docker.com
+          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }}"' -p:ContainerRegistry=registry.hub.docker.com
+          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }}-chiseled"' -p:ContainerFamily=jammy-chiseled -p:ContainerRegistry=registry.hub.docker.com
       - name: Build and push Docker release
-        if: ${{ env.IS_RELEASE == 'true' }}
+        if: ${{ steps.mu88-ci-cd.outputs.is-release == 'true' }}
         run: |
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ env.VERSION }};latest"' -p:ContainerRegistry=registry.hub.docker.com
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ env.VERSION }}-chiseled;latest-chiseled"' -p:ContainerRegistry=registry.hub.docker.com -p:ContainerFamily=jammy-chiseled
+          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }};latest"' -p:ContainerRegistry=registry.hub.docker.com
+          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }}-chiseled;latest-chiseled"' -p:ContainerRegistry=registry.hub.docker.com -p:ContainerFamily=jammy-chiseled
       - name: .NET Publish
         run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm64 /p:PublishSingleFile=true --self-contained
       - name: Create artifact
-        if: ${{ env.IS_RELEASE == 'true' }}
+        if: ${{ steps.mu88-ci-cd.outputs.is-release == 'true' }}
         run: |
           cd /home/runner/work/RaspiFanController/RaspiFanController/RaspiFanController/bin/Release/net9.0/linux-arm64/publish
           zip -r RaspiFanController.zip *
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
-        if: ${{ env.IS_RELEASE == 'true' }}
+        if: ${{ steps.mu88-ci-cd.outputs.is-release == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ env.VERSION }}
+          release_name: Release ${{ steps.mu88-ci-cd.outputs.version }}
           draft: false
           prerelease: false
       - name: Upload asset to GitHub Release
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
-        if: ${{ env.IS_RELEASE == 'true' }}
+        if: ${{ steps.mu88-ci-cd.outputs.is-release == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
