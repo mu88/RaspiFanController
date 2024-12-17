@@ -20,22 +20,10 @@ jobs:
           github-ref: ${{ github.ref }}
           sonar-key: 'mu88_RaspiFanController'
           sonar-token: ${{ secrets.SONAR_TOKEN }}
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          registry: registry.hub.docker.com
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push Docker non-release
-        if: ${{ steps.mu88-ci-cd.outputs.is-release != 'true' }}
-        run: |
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }}"' -p:ContainerRegistry=registry.hub.docker.com
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }}-chiseled"' -p:ContainerFamily=jammy-chiseled -p:ContainerRegistry=registry.hub.docker.com
-      - name: Build and push Docker release
-        if: ${{ steps.mu88-ci-cd.outputs.is-release == 'true' }}
-        run: |
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }};latest"' -p:ContainerRegistry=registry.hub.docker.com
-          dotnet publish RaspiFanController/RaspiFanController.csproj /t:MultiArchPublish '-p:ContainerImageTags="${{ steps.mu88-ci-cd.outputs.version }}-chiseled;latest-chiseled"' -p:ContainerRegistry=registry.hub.docker.com -p:ContainerFamily=jammy-chiseled
+          docker-chiseled: true
+          docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
+          docker-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker-token: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: .NET Publish
         run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm64 /p:PublishSingleFile=true --self-contained
       - name: Create artifact
@@ -51,7 +39,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.mu88-ci-cd.outputs.version }}
+          release_name: Release ${{ steps.mu88-ci-cd.outputs.release-version }}
           draft: false
           prerelease: false
       - name: Upload asset to GitHub Release
