@@ -17,10 +17,10 @@ jobs:
         id: mu88-ci-cd
         uses: mu88/github-actions/ci-cd@0.1
         with:
-          github-ref: ${{ github.ref }}
+          github-ref-name: ${{ github.ref }}
           sonar-key: 'mu88_RaspiFanController'
           sonar-token: ${{ secrets.SONAR_TOKEN }}
-          docker-chiseled: true
+          docker-publish-mode: non_chiseled_and_chiseled
           docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
           docker-username: ${{ secrets.DOCKERHUB_USERNAME }}
           docker-token: ${{ secrets.DOCKERHUB_TOKEN }}
