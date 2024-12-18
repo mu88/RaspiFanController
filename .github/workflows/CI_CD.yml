@@ -20,7 +20,7 @@ jobs:
           github-ref-name: ${{ github.ref }}
           sonar-key: 'mu88_RaspiFanController'
           sonar-token: ${{ secrets.SONAR_TOKEN }}
-          docker-publish-mode: non_chiseled_and_chiseled
+          docker-publish-mode: regular_and_chiseled
           docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
           docker-username: ${{ secrets.DOCKERHUB_USERNAME }}
           docker-token: ${{ secrets.DOCKERHUB_TOKEN }}
