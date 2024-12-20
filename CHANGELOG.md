@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="4.1.0"></a>
+## [4.1.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v4.1.0) (2024-12-20)
+
+### Features
+
+* add health check ([d5223bd](https://www.github.com/mu88/RaspiFanController/commit/d5223bdbf7dad7ab370af56419928593cbe514fd))
+* embed health check tool ([642e78a](https://www.github.com/mu88/RaspiFanController/commit/642e78a3b76186074beb8d45a08f0883aa5e9c6e))
+
 <a name="4.0.0"></a>
 ## [4.0.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v4.0.0) (2024-12-06)
 
