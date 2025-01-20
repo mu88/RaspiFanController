@@ -5,8 +5,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AspNetCoreAnalyzers" Version="0.3.0" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.3" />
-    <PackageVersion Include="FluentAssertions" Version="7.0.0" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
+    <PackageVersion Include="FluentAssertions" Version="8.0.0" />
     <PackageVersion Include="IDisposableAnalyzers" Version="4.0.8" />
     <PackageVersion Include="Iot.Device.Bindings" Version="3.2.0" />
     <PackageVersion Include="Meziantou.Analyzer" Version="2.0.186" />
