@@ -9,6 +9,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="FluentAssertions.Web.v8"/>
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter">

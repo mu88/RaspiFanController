@@ -96,13 +96,13 @@ public class SystemTests
 
     private static async Task AppShouldRunAsync(HttpResponseMessage appResponse, CancellationToken cancellationToken)
     {
-        appResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        appResponse.Should().Be200Ok();
         (await appResponse.Content.ReadAsStringAsync(cancellationToken)).Should().Contain("<title>Raspi Fan Controller</title>");
     }
 
     private static async Task HealthCheckShouldBeHealthyAsync(HttpResponseMessage healthCheckResponse, CancellationToken cancellationToken)
     {
-        healthCheckResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        healthCheckResponse.Should().Be200Ok();
         (await healthCheckResponse.Content.ReadAsStringAsync(cancellationToken)).Should().Be("Healthy");
     }
 
