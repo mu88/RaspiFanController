@@ -10,7 +10,7 @@
     <PackageVersion Include="FluentAssertions.Web.v8" Version="1.8.0"/>
     <PackageVersion Include="IDisposableAnalyzers" Version="4.0.8" />
     <PackageVersion Include="Iot.Device.Bindings" Version="3.2.0" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.189" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.193" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="mu88.Shared" Version="2.0.0"/>
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
