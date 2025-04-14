@@ -3,7 +3,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <ContainerRepository>mu88/raspifancontroller</ContainerRepository>
     <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
-    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:9.0.3</ContainerBaseImage>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:9.0.4</ContainerBaseImage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Iot.Device.Bindings" />
