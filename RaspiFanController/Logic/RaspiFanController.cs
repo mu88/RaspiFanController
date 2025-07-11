@@ -13,7 +13,7 @@ public class RaspiFanController : IFanController
         GpioPin = settings.CurrentValue.GpioPin;
 
         using var gpioController = new GpioController();
-        gpioController.OpenPin(GpioPin, PinMode.Input);
+        using var openPin = gpioController.OpenPin(GpioPin, PinMode.Input);
         var initialValue = gpioController.Read(GpioPin) == PinValue.High;
         IsFanRunning = initialValue;
 
@@ -31,7 +31,7 @@ public class RaspiFanController : IFanController
     public void TurnFanOn()
     {
         using var gpioController = new GpioController();
-        gpioController.OpenPin(GpioPin, PinMode.Output);
+        using var openPin = gpioController.OpenPin(GpioPin, PinMode.Output);
         gpioController.Write(GpioPin, PinValue.High);
         IsFanRunning = true;
 
@@ -42,7 +42,7 @@ public class RaspiFanController : IFanController
     public void TurnFanOff()
     {
         using var gpioController = new GpioController();
-        gpioController.OpenPin(GpioPin, PinMode.Output);
+        using var openPin = gpioController.OpenPin(GpioPin, PinMode.Output);
         gpioController.Write(GpioPin, PinValue.Low);
         IsFanRunning = false;
 
