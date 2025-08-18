@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: shared_ci_cd
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
       - name: .NET Publish
