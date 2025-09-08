@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
       - name: .NET Publish
         run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm64 /p:PublishSingleFile=true --self-contained
       - name: Create artifact
