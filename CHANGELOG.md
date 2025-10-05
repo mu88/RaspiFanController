@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="5.0.0"></a>
+## [5.0.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v5.0.0) (2025-10-05)
+
+### Breaking Changes
+
+* use GitHub Container Registry instead of Docker Hub ([b2b4cf5](https://www.github.com/mu88/RaspiFanController/commit/b2b4cf512c07575ceea778eb98eb08bb37c7b6ca))
+
 <a name="4.1.0"></a>
 ## [4.1.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v4.1.0) (2024-12-20)
 
