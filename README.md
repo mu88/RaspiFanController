@@ -2,7 +2,6 @@
 
 ![Combined CI / Release](https://github.com/mu88/RaspiFanController/actions/workflows/CI_CD.yml/badge.svg)
 ![Mutation testing](https://github.com/mu88/RaspiFanController/actions/workflows/Mutation%20Testing.yml/badge.svg)
-![Docker Image Version (latest semver)](https://img.shields.io/docker/v/mu88/raspifancontroller?logo=docker&sort=semver)  
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mu88_RaspiFanController&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mu88_RaspiFanController)
@@ -24,7 +23,7 @@ I wrote the following blog posts describing the complete ceremony a bit more in 
 I've integrated the two classes `Logic\DevFanController.cs` and `Logic\DevTemperatureProvider.cs` for development purposes: they're simulating the temperature measurement and fan controlling when running the app in development mode.
 
 ## Deployment
-The app is deployed both as a [self-contained executable](https://docs.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained) and the Docker image [`mu88/raspifancontroller`](https://hub.docker.com/repository/docker/mu88/raspifancontroller).
+The app is deployed both as a [self-contained executable](https://docs.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained) and the Docker image [`mu88/raspifancontroller`](https://github.com/mu88/RaspiFanController/pkgs/container/raspifancontroller).
 
 ### Self-contained executable
 Use the following command to generate the app:
