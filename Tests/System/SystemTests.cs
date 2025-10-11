@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Net;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
@@ -37,7 +36,7 @@ public class SystemTests
         var timeoutCts = new CancellationTokenSource();
         timeoutCts.CancelAfter(timeout);
         CancellationToken cancellationToken = timeoutCts.Token;
-        
+
         return cancellationToken;
     }
 
@@ -50,7 +49,8 @@ public class SystemTests
             StartInfo = new ProcessStartInfo
             {
                 FileName = "dotnet",
-                Arguments = $"publish {projectFile} --os linux --arch amd64 /t:PublishContainer -p:ContainerFamily=noble-chiseled -p:ContainerImageTags=local-system-test-chiseled",
+                Arguments =
+                    $"publish {projectFile} --os linux --arch amd64 /t:PublishContainer -p:ContainerFamily=noble-chiseled -p:ContainerImageTags=local-system-test-chiseled",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
@@ -87,9 +87,9 @@ public class SystemTests
             .WithNetwork(network)
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development") // this enables the faked temperature and fan controller as we're not on a real Raspi
             .WithPortBinding(8080, true)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilMessageIsLogged(
-                "Content root path: /app",
-                strategy => strategy.WithTimeout(TimeSpan.FromSeconds(30)))) // as it's a chiseled container, waiting for the port does not work
+            .WithWaitStrategy(Wait.ForUnixContainer()
+                                  .UntilMessageIsLogged("Content root path: /app",
+                                      strategy => strategy.WithTimeout(TimeSpan.FromSeconds(30)))) // as it's a chiseled container, waiting for the port does not work
             .Build();
 
     private static Uri GetAppBaseAddress(IContainer container) => new($"http://{container.Hostname}:{container.GetMappedPublicPort(8080)}/cool");

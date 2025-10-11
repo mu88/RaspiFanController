@@ -16,7 +16,7 @@ jobs:
       attestations: write
       id-token: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@26dd40f4b32f300fc5d95ed070d45fe847808a84
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@a468327d38581ef4bab905fa80bd524bcc68349f
     with:
       github-ref-name: ${{ github.ref }}
       sonar-key: 'mu88_RaspiFanController'
@@ -38,7 +38,10 @@ jobs:
         uses: actions/setup-dotnet@v5
 
       - name: .NET Publish
-        run: dotnet publish RaspiFanController/RaspiFanController.csproj -o ${{ runner.temp }}/Release/ -r linux-arm64 /p:PublishSingleFile=true --self-contained
+        run: |
+          cd RaspiFanController
+          dotnet restore --locked-mode
+          dotnet publish --no-restore --output ${{ runner.temp }}/Release/ --runtime linux-arm64 --self-contained /p:PublishSingleFile=true
 
       - name: Create ZIP for release
         if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}

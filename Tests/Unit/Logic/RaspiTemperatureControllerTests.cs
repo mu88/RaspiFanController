@@ -190,16 +190,24 @@ public class RaspiTemperatureControllerTests
         if (fanShouldRun)
         {
             if (isFanRunning)
+            {
                 _fanControllerMock.DidNotReceive().TurnFanOn();
+            }
             else
+            {
                 _fanControllerMock.Received(1).TurnFanOn();
+            }
         }
         else
         {
             if (isFanRunning)
+            {
                 _fanControllerMock.Received(1).TurnFanOff();
+            }
             else
+            {
                 _fanControllerMock.DidNotReceive().TurnFanOff();
+            }
         }
     }
 
