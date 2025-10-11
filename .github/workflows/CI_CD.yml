@@ -53,19 +53,25 @@ jobs:
           cd ${{ runner.temp }}/Release/
           zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.release-version }}.zip *
 
-      - name: Create CHANGELOG
+      - name: Determine release notes
         id: changelog
-        uses: Requarks/changelog-action@v1
         if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
-        with:
-          token: ${{ github.token }}
-          tag: ${{ github.ref_name }}
-          excludeTypes: build,chore,ci,docs,other,style
+        run: |
+          dotnet tool restore
+
+          $release_notes = dotnet tool versionize changelog -v ${{ needs.shared_ci_cd.outputs.release-version }}
+          if [ -z "$release_notes" ]; then
+            echo "No release notes generated, something went wrong."
+            exit 1
+          fi
+
+          echo "changes=$release_notes" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
         with:
           files: ${{ runner.temp }}/Release/RaspiFanController*.zip
-          tag_name: ${{ github.ref_name }}
+          name: ${{ needs.shared_ci_cd.outputs.release-version }}
+          tag_name: v${{ needs.shared_ci_cd.outputs.release-version }}
           body: ${{ steps.changelog.outputs.changes }}
