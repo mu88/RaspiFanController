@@ -1,7 +1,10 @@
 {
     "stryker-config":
     {
-        "project": "RaspiFanController",
+        "project": "RaspiFanController.csproj",
+        "test-projects": [
+            "../Tests/Tests.csproj"
+        ],
         "reporters": [
             "html",
             "progress",
@@ -13,6 +16,8 @@
         "ignore-methods": [
             "Logger.Log*"
         ],
-        "mutate": ["!**/Program.cs"]
+        "mutate": [
+            "!**/Program.cs"
+        ]
     }
 }
