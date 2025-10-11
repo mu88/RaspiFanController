@@ -38,34 +38,27 @@ jobs:
         uses: actions/setup-dotnet@v5
 
       - name: .NET Publish
-        run: dotnet publish RaspiFanController/RaspiFanController.csproj -r linux-arm64 /p:PublishSingleFile=true --self-contained
+        run: dotnet publish RaspiFanController/RaspiFanController.csproj -o ${{ runner.temp }}/Release/ -r linux-arm64 /p:PublishSingleFile=true --self-contained
 
-      - name: Create artifact
+      - name: Create ZIP for release
         if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
         run: |
-          cd /home/runner/work/RaspiFanController/RaspiFanController/RaspiFanController/bin/Release/net9.0/linux-arm64/publish
-          zip -r RaspiFanController.zip *
+          cd ${{ runner.temp }}/Release/
+          zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.release-version }}.zip *
+
+      - name: Create CHANGELOG
+        id: changelog
+        uses: Requarks/changelog-action@v1
+        if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+          excludeTypes: build,chore,ci,docs,other,style
 
       - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ needs.shared_ci_cd.outputs.release-version }}
-          draft: false
-          prerelease: false
-
-      - name: Upload asset to GitHub Release
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: /home/runner/work/RaspiFanController/RaspiFanController/RaspiFanController/bin/Release/net9.0/linux-arm64/publish/RaspiFanController.zip
-          asset_name: RaspiFanController.zip
-          asset_content_type: application/zip
+          files: ${{ runner.temp }}/Release/RaspiFanController*.zip
+          tag_name: ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.changes }}
