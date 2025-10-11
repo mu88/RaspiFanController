@@ -3,8 +3,6 @@ name: Combined CI / Release
 on:
   workflow_dispatch:
   push:
-    tags:
-      - '*'
     branches:
       - '**'
 
@@ -16,13 +14,12 @@ jobs:
       attestations: write
       id-token: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@26dd40f4b32f300fc5d95ed070d45fe847808a84
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@f252e7d1c94652b5e51996174f6e2977ef88f1a5
     with:
-      github-ref-name: ${{ github.ref }}
-      sonar-key: 'mu88_RaspiFanController'
       docker-publish-mode: regular_and_chiseled
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
       requires-docker-login: true
+      sonar-key: mu88_RaspiFanController
     secrets:
       sonar-token: ${{ secrets.SONAR_TOKEN }}
 
@@ -32,13 +29,23 @@ jobs:
     needs: shared_ci_cd
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out code
+        uses: actions/checkout@v5
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v5
+        with:
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+          global-json-file: global.json
 
-      - name: .NET Publish
-        run: dotnet publish RaspiFanController/RaspiFanController.csproj -o ${{ runner.temp }}/Release/ -r linux-arm64 /p:PublishSingleFile=true --self-contained
+      - name: Build .NET single-file EXE
+        run: |
+          dotnet publish RaspiFanController/RaspiFanController.csproj \
+            --output ${{ runner.temp }}/Release/ \
+            --runtime linux-arm64 \
+            --self-contained \
+            /p:PublishSingleFile=true
 
       - name: Create ZIP for release
         if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}

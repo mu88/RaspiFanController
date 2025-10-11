@@ -2,6 +2,7 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);IDISP001;IDISP004;MA0012</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild">
@@ -10,6 +11,7 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="FluentAssertions.Web.v8"/>
+    <PackageReference Include="mu88.Shared"/>
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter">

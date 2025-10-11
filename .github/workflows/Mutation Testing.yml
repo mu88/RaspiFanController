@@ -9,13 +9,15 @@ jobs:
   mutation-testing:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out code
+        uses: actions/checkout@v5
 
-      - name: Setup .NET
+      - name: Set up .NET
         uses: actions/setup-dotnet@v5
-
-      - name: Restore dependencies
-        run: dotnet restore
+        with:
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+          global-json-file: global.json
 
       - name: Restore tools
         run: dotnet tool restore
@@ -23,10 +25,14 @@ jobs:
       - name: Run mutation testing
         run: |
           cd RaspiFanController
-          dotnet stryker --dashboard-api-key "${{ secrets.STRYKER_DASHBOARD_API_KEY }}" --version "${{ github.ref_name }}" --config-file ../stryker-config.json
+          dotnet stryker \
+            --dashboard-api-key "${{ secrets.STRYKER_DASHBOARD_API_KEY }}" \
+            --version "${{ github.sha }}" \
+            --config-file ../stryker-config.json \
+            --output ${{ runner.temp }}/Stryker/
 
       - name: Archive mutation testing results
         uses: actions/upload-artifact@v4
         with:
           name: mutation-testing-report
-          path: StrykerOutput/**/*.*
+          path: ${{ runner.temp }}/Stryker/**/*.*
