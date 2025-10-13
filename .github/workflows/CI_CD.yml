@@ -14,7 +14,7 @@ jobs:
       attestations: write
       id-token: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@f252e7d1c94652b5e51996174f6e2977ef88f1a5
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@483914fcf220440d145adfc81448311851dcb70c
     with:
       docker-publish-mode: regular_and_chiseled
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
@@ -48,18 +48,18 @@ jobs:
             /p:PublishSingleFile=true
 
       - name: Create ZIP for release
-        if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
+        if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         run: |
           cd ${{ runner.temp }}/Release/
-          zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.release-version }}.zip *
+          zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.zip *
 
       - name: Determine release notes
         id: changelog
-        if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
+        if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         run: |
           dotnet tool restore
 
-          $release_notes = dotnet tool versionize changelog -v ${{ needs.shared_ci_cd.outputs.release-version }}
+          $release_notes = dotnet tool versionize changelog -v ${{ needs.shared_ci_cd.outputs.release_version }}
           if [ -z "$release_notes" ]; then
             echo "No release notes generated, something went wrong."
             exit 1
@@ -69,9 +69,9 @@ jobs:
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
-        if: ${{ needs.shared_ci_cd.outputs.is-release == 'true' }}
+        if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         with:
           files: ${{ runner.temp }}/Release/RaspiFanController*.zip
-          name: ${{ needs.shared_ci_cd.outputs.release-version }}
-          tag_name: v${{ needs.shared_ci_cd.outputs.release-version }}
+          name: ${{ needs.shared_ci_cd.outputs.release_version }}
+          tag_name: v${{ needs.shared_ci_cd.outputs.release_version }}
           body: ${{ steps.changelog.outputs.changes }}
