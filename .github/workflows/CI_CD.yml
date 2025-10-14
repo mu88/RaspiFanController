@@ -67,6 +67,12 @@ jobs:
 
           echo "changes=$release_notes" >> $GITHUB_OUTPUT
 
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v3
+        if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
+        with:
+          subject-path: ${{ runner.temp }}/Release/RaspiFanController*.zip
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
