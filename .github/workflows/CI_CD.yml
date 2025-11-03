@@ -14,7 +14,7 @@ jobs:
       attestations: write
       id-token: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@6fadf871961391f55b53bdf815d8a7315fa470fe
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@9e69b372885aa30566ebf1dbfa0611e4b66294e9
     with:
       docker-publish-mode: regular_and_chiseled
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
