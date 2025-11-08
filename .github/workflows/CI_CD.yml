@@ -9,10 +9,12 @@ on:
 jobs:
   shared_ci_cd:
     permissions:
+      attestations: write
       contents: read
+      id-token: write
       packages: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@275fcd1b0a65f36e499d2315f3cea0c3ed38e9b1
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@feature/provenance
     with:
       docker-publish-mode: regular_and_chiseled
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
@@ -78,15 +80,14 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          artifact-name: RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.project.spdx.json
-          output-file: ${{ runner.temp }}/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.project.spdx.json
+          output-file: sbom.json
           path: .
 
       - name: Attest SBOM
         uses: actions/attest-sbom@v2
         if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         with:
-          sbom-path: ${{ runner.temp }}/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.project.spdx.json
+          sbom-path: sbom.json
           subject-path: ${{ runner.temp }}/Release/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.zip
 
       - name: Create GitHub Release
@@ -94,7 +95,7 @@ jobs:
         if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         with:
           files: |
-            ${{ runner.temp }}/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.project.spdx.json
+            sbom.json
             ${{ runner.temp }}/Release/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.zip
           name: ${{ needs.shared_ci_cd.outputs.release_version }}
           tag_name: v${{ needs.shared_ci_cd.outputs.release_version }}
