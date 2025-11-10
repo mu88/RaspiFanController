@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
-    <PackageVersion Include="FluentAssertions" Version="8.7.1" />
+    <PackageVersion Include="FluentAssertions" Version="8.8.0" />
     <PackageVersion Include="FluentAssertions.Web.v8" Version="1.9.5"/>
     <PackageVersion Include="Iot.Device.Bindings" Version="4.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
@@ -14,7 +14,7 @@
     <PackageVersion Include="nunit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
     <PackageVersion Include="System.Device.Gpio" Version="4.0.1" />
-    <PackageVersion Include="Testcontainers" Version="4.8.0"/>
+    <PackageVersion Include="Testcontainers" Version="4.8.1"/>
   </ItemGroup>
   <ItemGroup>
     <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8g4q-xg66-9fp4"/>

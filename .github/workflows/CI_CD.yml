@@ -84,7 +84,7 @@ jobs:
           path: .
 
       - name: Attest SBOM
-        uses: actions/attest-sbom@v2
+        uses: actions/attest-sbom@v3
         if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         with:
           sbom-path: sbom.json
