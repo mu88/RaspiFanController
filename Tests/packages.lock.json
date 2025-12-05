@@ -37,9 +37,9 @@
       },
       "mu88.Shared": {
         "type": "Direct",
-        "requested": "[4.0.0, )",
-        "resolved": "4.0.0",
-        "contentHash": "vaiIfQfa1mBQ6KXs8T5nzQwovcrPU9FIyrlEbCq+3eNZzSbAttmPsiovpT27NGBcV59t1y5Qu2QRNjUJeFC7PA==",
+        "requested": "[4.1.0-alpha.272.1.0, )",
+        "resolved": "4.1.0-alpha.272.1.0",
+        "contentHash": "P4OXvTRAFROwCks3vgDtCt+Q8xHD5aSPwSs4DRLF34636veBtYyiuxATWaxd/wIRqcZKqbGAJTssP8IzLsGaRA==",
         "dependencies": {
           "IDisposableAnalyzers": "4.0.8",
           "Meziantou.Analyzer": "2.0.257",
@@ -535,7 +535,7 @@
         "dependencies": {
           "Iot.Device.Bindings": "[4.0.1, )",
           "System.Device.Gpio": "[4.0.1, )",
-          "mu88.Shared": "[4.0.0, )"
+          "mu88.Shared": "[4.1.0-alpha.272.1.0, )"
         }
       },
       "Iot.Device.Bindings": {

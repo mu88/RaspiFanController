@@ -14,7 +14,7 @@ jobs:
       id-token: write
       packages: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@6bb14d0428677b74d3566fe980364a33a6136136
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@de9bdfc22b74f534fe517d93f260a3c8824528d8
     with:
       docker-attest-provenance-and-sbom: false
       docker-publish-mode: regular_and_chiseled
