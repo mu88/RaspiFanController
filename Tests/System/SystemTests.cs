@@ -57,9 +57,9 @@ public class SystemTests
             }
         };
         process.Start();
-        while (!process.StandardOutput.EndOfStream)
+        while (await process.StandardOutput.ReadLineAsync(cancellationToken) is { } line)
         {
-            Console.WriteLine(await process.StandardOutput.ReadLineAsync(cancellationToken));
+            Console.WriteLine(line);
         }
 
         await process.WaitForExitAsync(cancellationToken);
