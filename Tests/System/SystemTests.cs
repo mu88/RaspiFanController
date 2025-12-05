@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
@@ -14,15 +15,16 @@ public class SystemTests
     public async Task AppRunningInDocker_ShouldBeHealthy()
     {
         // Arrange
-        CancellationToken cancellationToken = CreateCancellationToken(TimeSpan.FromMinutes(1));
-        await BuildDockerImageOfAppAsync(cancellationToken);
-        var container = await StartAppInContainersAsync(cancellationToken);
+        var containerImageTag = GenerateContainerImageTag();
+        var cancellationToken = CreateCancellationToken(TimeSpan.FromMinutes(1));
+        await BuildDockerImageOfAppAsync(containerImageTag, cancellationToken);
+        var container = await StartAppInContainersAsync(containerImageTag, cancellationToken);
         var httpClient = new HttpClient { BaseAddress = GetAppBaseAddress(container) };
 
         // Act
         var healthCheckResponse = await httpClient.GetAsync("healthz", cancellationToken);
         var appResponse = await httpClient.GetAsync("/", cancellationToken);
-        ExecResult healthCheckToolResult = await container.ExecAsync(["dotnet", "/app/mu88.HealthCheck.dll", "http://localhost:8080/cool/healthz"], cancellationToken);
+        var healthCheckToolResult = await container.ExecAsync(["dotnet", "/app/mu88.HealthCheck.dll", "http://localhost:8080/cool/healthz"], cancellationToken);
 
         // Assert
         await LogsShouldNotContainWarningsAsync(container, cancellationToken);
@@ -35,12 +37,12 @@ public class SystemTests
     {
         var timeoutCts = new CancellationTokenSource();
         timeoutCts.CancelAfter(timeout);
-        CancellationToken cancellationToken = timeoutCts.Token;
+        var cancellationToken = timeoutCts.Token;
 
         return cancellationToken;
     }
 
-    private static async Task BuildDockerImageOfAppAsync(CancellationToken cancellationToken)
+    private static async Task BuildDockerImageOfAppAsync(string containerImageTag, CancellationToken cancellationToken)
     {
         var rootDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.Parent ?? throw new NullReferenceException();
         var projectFile = Path.Join(rootDirectory.FullName, "RaspiFanController", "RaspiFanController.csproj");
@@ -50,7 +52,13 @@ public class SystemTests
             {
                 FileName = "dotnet",
                 Arguments =
-                    $"publish {projectFile} --os linux --arch amd64 /t:PublishContainer -p:ContainerFamily=noble-chiseled -p:ContainerImageTags=local-system-test-chiseled",
+                    $"publish {projectFile} --os linux --arch amd64 " +
+                    $"/t:PublishContainersForMultipleFamilies " +
+                    $"-p:PublishChiseledContainer=true " +
+                    $"-p:ReleaseVersion={containerImageTag} " +
+                    "-p:IsRelease=false " +
+                    "-p:ContainerRegistry=\"\" " + // image shall not be pushed
+                    "-p:ContainerRepository=\"me/test\" ",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
@@ -66,24 +74,24 @@ public class SystemTests
         process.ExitCode.Should().Be(0);
     }
 
-    private static async Task<IContainer> StartAppInContainersAsync(CancellationToken cancellationToken)
+    private static async Task<IContainer> StartAppInContainersAsync(string containerImageTag, CancellationToken cancellationToken)
     {
         Console.WriteLine("Building and starting network");
-        INetwork? network = new NetworkBuilder().Build();
+        var network = new NetworkBuilder().Build();
         await network.CreateAsync(cancellationToken);
         Console.WriteLine("Network started");
 
         Console.WriteLine("Building and starting app container");
-        IContainer container = BuildAppContainer(network);
+        var container = BuildAppContainer(network, containerImageTag);
         await container.StartAsync(cancellationToken);
         Console.WriteLine("App container started");
 
         return container;
     }
 
-    private static IContainer BuildAppContainer(INetwork network) =>
+    private static IContainer BuildAppContainer(INetwork network, string containerImageTag) =>
         new ContainerBuilder()
-            .WithImage("mu88/raspifancontroller:local-system-test-chiseled")
+            .WithImage($"me/test:{containerImageTag}-chiseled")
             .WithNetwork(network)
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development") // this enables the faked temperature and fan controller as we're not on a real Raspi
             .WithPortBinding(8080, true)
@@ -113,4 +121,7 @@ public class SystemTests
         Console.WriteLine($"Stdout:{Environment.NewLine}{logValues.Stdout}");
         logValues.Stdout.Should().NotContain("warn:");
     }
+
+    [SuppressMessage("Design", "MA0076:Do not use implicit culture-sensitive ToString in interpolated strings", Justification = "Okay for me")]
+    private static string GenerateContainerImageTag() => $"system-test-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
 }

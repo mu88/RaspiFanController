@@ -14,10 +14,9 @@ jobs:
       id-token: write
       packages: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@6bb14d0428677b74d3566fe980364a33a6136136
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@a27cb31c1879dcec13765ac01bb315041dc5ad86
     with:
       docker-attest-provenance-and-sbom: false
-      docker-publish-mode: regular_and_chiseled
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
       requires-docker-login: true
       sonar-key: mu88_RaspiFanController
