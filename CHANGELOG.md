@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="6.0.0"></a>
+## [6.0.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v6.0.0) (2025-12-12)
+
+### ✨ Features
+
+* upgrade to .NET 10 ([f3cb538](https://www.github.com/mu88/RaspiFanController/commit/f3cb5387810170b4e463cc62d38084d0dc915536))
+
+### ✅ Tests
+
+* harmonize test and build all configured Docker images ([40d280d](https://www.github.com/mu88/RaspiFanController/commit/40d280db2c631cabcec8cd77bdd64787e7f3ddc6))
+
+### 🔧 Chores
+
+* switch to new SLNX format ([958285a](https://www.github.com/mu88/RaspiFanController/commit/958285a3d1ee8f25c21d616cb3a86245b1411df0))
+* **deps:** update all dependencies ([e236104](https://www.github.com/mu88/RaspiFanController/commit/e2361045e510b6399ac0f82870cc6eed002c7561))
+* **deps:** update all dependencies ([62b5bd5](https://www.github.com/mu88/RaspiFanController/commit/62b5bd50d435b96fddd9c88e4a55048c35b3e8d8))
+* **deps:** update all dependencies ([e151ad2](https://www.github.com/mu88/RaspiFanController/commit/e151ad242647d581ee31c4fe4d4202312cc7e7ef))
+* **deps:** update all dependencies ([5347fef](https://www.github.com/mu88/RaspiFanController/commit/5347fefa5671e52fd989948a53eca6693a1696f5))
+* **deps:** update all dependencies ([#37](https://www.github.com/mu88/RaspiFanController/issues/37)) ([abda30f](https://www.github.com/mu88/RaspiFanController/commit/abda30fd1084fe6947d6b80b8337a12c06151b58))
+* **deps:** update dependency nunit3testadapter to 5.2.0 ([70feda6](https://www.github.com/mu88/RaspiFanController/commit/70feda6cf07f9942f0d4273e6fd07408dbb1e2bd))
+* **deps:** update mu88/github-actions digest to d09e374 ([e687a52](https://www.github.com/mu88/RaspiFanController/commit/e687a52a66a36525afabeaefc8e5baa288d29509))
+
+### Breaking Changes
+
+* upgrade to .NET 10 ([f3cb538](https://www.github.com/mu88/RaspiFanController/commit/f3cb5387810170b4e463cc62d38084d0dc915536))
+
 <a name="5.0.0"></a>
 ## [5.0.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v5.0.0) (2025-10-05)
 
