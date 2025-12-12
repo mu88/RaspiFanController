@@ -54,11 +54,10 @@ public class SystemTests
                 Arguments =
                     $"publish {projectFile} --os linux --arch amd64 " +
                     $"/t:PublishContainersForMultipleFamilies " +
-                    $"-p:PublishChiseledContainer=true " +
                     $"-p:ReleaseVersion={containerImageTag} " +
                     "-p:IsRelease=false " +
                     "-p:ContainerRegistry=\"\" " + // image shall not be pushed
-                    "-p:ContainerRepository=\"me/test\" ",
+                    "-p:ContainerRepository=\"me/raspifancontroller\" ",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
@@ -91,7 +90,7 @@ public class SystemTests
 
     private static IContainer BuildAppContainer(INetwork network, string containerImageTag) =>
         new ContainerBuilder()
-            .WithImage($"me/test:{containerImageTag}-chiseled")
+            .WithImage($"me/raspifancontroller:{containerImageTag}-chiseled")
             .WithNetwork(network)
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development") // this enables the faked temperature and fan controller as we're not on a real Raspi
             .WithPortBinding(8080, true)
