@@ -9,7 +9,7 @@
     <PackageVersion Include="FluentAssertions.Web.v8" Version="1.9.5" />
     <PackageVersion Include="Iot.Device.Bindings" Version="4.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageVersion Include="mu88.Shared" Version="4.1.0"/>
+    <PackageVersion Include="mu88.Shared" Version="4.1.0" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="nunit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />

@@ -25,17 +25,19 @@ jobs:
 
   ci_cd:
     runs-on: ubuntu-latest
-
+    
     needs: shared_ci_cd
 
     permissions:
       attestations: write
-      contents: read
+      contents: write # Needed to create GitHub Release
       id-token: write
 
     steps:
       - name: Check out code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch full history and tags so tools like `versionize` can determine previous tags/commits
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v5
@@ -62,14 +64,27 @@ jobs:
         if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         run: |
           dotnet tool restore
+          
+          # Versionize requires git user config to be set, although it doesn't actually use it for anything in this scenario
+          git config user.name "John Doe"
+          git config user.email "johndoe@example.com"
+          dotnet tool run versionize changelog -v ${{ needs.shared_ci_cd.outputs.release_version }} >> ${{ runner.temp }}/release_notes.md || true
 
-          $release_notes = dotnet tool versionize changelog -v ${{ needs.shared_ci_cd.outputs.release_version }}
+          # Not sure why versionize modifies packages.lock.json, but revert that change
+          git restore RaspiFanController/packages.lock.json
+
+          release_notes=$(cat ${{ runner.temp }}/release_notes.md)
+          echo "Release notes generated:"
+          echo "$release_notes"
           if [ -z "$release_notes" ]; then
             echo "No release notes generated, something went wrong."
             exit 1
           fi
 
-          echo "changes=$release_notes" >> $GITHUB_OUTPUT
+          # Use GitHub Actions multiline output syntax to safely pass release notes (they may contain newlines and lines starting with '*')
+          echo "changes<<EOF" >> $GITHUB_OUTPUT
+          cat ${{ runner.temp }}/release_notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
