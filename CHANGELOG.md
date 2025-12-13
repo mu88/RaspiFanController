@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="6.0.1"></a>
+## [6.0.1](https://www.github.com/mu88/RaspiFanController/releases/tag/v6.0.1) (2025-12-13)
+
 <a name="6.0.0"></a>
 ## [6.0.0](https://www.github.com/mu88/RaspiFanController/releases/tag/v6.0.0) (2025-12-12)
 
