@@ -63,16 +63,12 @@ jobs:
         id: changelog
         if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
         run: |
-          dotnet tool restore
-
-          # See https://github.com/dotnet/sdk/issues/39697: "dotnet publish" modifies the packages.lock.json file, restore it to avoid versionize errors
-          git restore RaspiFanController/packages.lock.json
-          
           # See https://github.com/versionize/versionize/issues/189: Versionize requires git user config to be set
           git config user.name "John Doe"
           git config user.email "johndoe@example.com"
 
-          dotnet tool run versionize changelog -v ${{ needs.shared_ci_cd.outputs.release_version }} >> ${{ runner.temp }}/release_notes.md || true
+          dotnet tool restore
+          dotnet tool run versionize --skip-dirty --dry-run changelog -v ${{ needs.shared_ci_cd.outputs.release_version }} >> ${{ runner.temp }}/release_notes.md || true
           release_notes=$(cat ${{ runner.temp }}/release_notes.md)
           echo "Determined release notes:"
           echo "$release_notes"
