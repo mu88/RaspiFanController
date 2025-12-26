@@ -33,7 +33,7 @@ jobs:
             --output ${{ runner.temp }}/Stryker/
 
       - name: Archive mutation testing results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: mutation-testing-report
           path: ${{ runner.temp }}/Stryker/**/*.*
