@@ -88,8 +88,7 @@ public class SystemTests
     }
 
     private static IContainer BuildAppContainer(INetwork network, string containerImageTag) =>
-        new ContainerBuilder()
-            .WithImage($"raspifancontroller:{containerImageTag}-chiseled")
+        new ContainerBuilder($"raspifancontroller:{containerImageTag}-chiseled")
             .WithNetwork(network)
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development") // this enables the faked temperature and fan controller as we're not on a real Raspi
             .WithPortBinding(8080, true)
