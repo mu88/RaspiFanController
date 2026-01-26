@@ -24,7 +24,7 @@ public class SystemTests
         // Act
         var healthCheckResponse = await httpClient.GetAsync("healthz", cancellationToken);
         var appResponse = await httpClient.GetAsync("/", cancellationToken);
-        var healthCheckToolResult = await container.ExecAsync(["dotnet", "/app/mu88.HealthCheck.dll", "http://localhost:8080/cool/healthz"], cancellationToken);
+        var healthCheckToolResult = await container.ExecAsync(["dotnet", "/app/mu88.HealthCheck.dll", "http://127.0.0.1:8080/cool/healthz"], cancellationToken);
 
         // Assert
         await LogsShouldNotContainWarningsAsync(container, cancellationToken);
