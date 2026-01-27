@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Docker.DotNet;
+using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
@@ -11,35 +13,59 @@ namespace Tests.System;
 [Category("System")]
 public class SystemTests
 {
+    private CancellationTokenSource? _cancellationTokenSource;
+    private CancellationToken _cancellationToken;
+    private DockerClient? _dockerClient;
+    private IContainer? _container;
+
+    [SetUp]
+    public void Setup()
+    {
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+        _cancellationToken = _cancellationTokenSource.Token;
+        _dockerClient = new DockerClientConfiguration().CreateClient();
+    }
+
+    [TearDown]
+    public async Task Teardown()
+    {
+        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")))
+        {
+            return; // no need to clean up on GitHub Actions runners
+        }
+
+        // If the test passed, clean up the container and image. Otherwise, keep them for investigation.
+        if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Passed && _container is not null && _dockerClient is not null)
+        {
+            await _container.StopAsync(_cancellationToken);
+            await _container.DisposeAsync();
+            await _dockerClient.Images.DeleteImageAsync(_container.Image.FullName, new ImageDeleteParameters { Force = true }, _cancellationToken);
+        }
+
+        _dockerClient?.Dispose();
+        _cancellationTokenSource?.Dispose();
+    }
+
     [Test]
+    [SuppressMessage("IDisposableAnalyzers.Correctness", "IDISP014:Use a single instance of HttpClient", Justification = "Just a single test, not a perf issue")]
     public async Task AppRunningInDocker_ShouldBeHealthy()
     {
         // Arrange
         var containerImageTag = GenerateContainerImageTag();
-        var cancellationToken = CreateCancellationToken(TimeSpan.FromMinutes(1));
-        await BuildDockerImageOfAppAsync(containerImageTag, cancellationToken);
-        var container = await StartAppInContainersAsync(containerImageTag, cancellationToken);
-        var httpClient = new HttpClient { BaseAddress = GetAppBaseAddress(container) };
+        await BuildDockerImageOfAppAsync(containerImageTag, _cancellationToken);
+        _container = await StartAppInContainersAsync(containerImageTag, _cancellationToken);
+        var httpClient = new HttpClient { BaseAddress = GetAppBaseAddress(_container) };
 
         // Act
-        var healthCheckResponse = await httpClient.GetAsync("healthz", cancellationToken);
-        var appResponse = await httpClient.GetAsync("/", cancellationToken);
-        var healthCheckToolResult = await container.ExecAsync(["dotnet", "/app/mu88.HealthCheck.dll", "http://127.0.0.1:8080/cool/healthz"], cancellationToken);
+        var healthCheckResponse = await httpClient.GetAsync("healthz", _cancellationToken);
+        var appResponse = await httpClient.GetAsync("/", _cancellationToken);
+        var healthCheckToolResult = await _container.ExecAsync(["dotnet", "/app/mu88.HealthCheck.dll", "http://127.0.0.1:8080/cool/healthz"], _cancellationToken);
 
         // Assert
-        await LogsShouldNotContainWarningsAsync(container, cancellationToken);
-        await HealthCheckShouldBeHealthyAsync(healthCheckResponse, cancellationToken);
-        await AppShouldRunAsync(appResponse, cancellationToken);
+        await LogsShouldNotContainWarningsAsync(_container, _cancellationToken);
+        await HealthCheckShouldBeHealthyAsync(healthCheckResponse, _cancellationToken);
+        await AppShouldRunAsync(appResponse, _cancellationToken);
         healthCheckToolResult.ExitCode.Should().Be(0);
-    }
-
-    private static CancellationToken CreateCancellationToken(TimeSpan timeout)
-    {
-        var timeoutCts = new CancellationTokenSource();
-        timeoutCts.CancelAfter(timeout);
-        var cancellationToken = timeoutCts.Token;
-
-        return cancellationToken;
     }
 
     private static async Task BuildDockerImageOfAppAsync(string containerImageTag, CancellationToken cancellationToken)
