@@ -4,7 +4,7 @@ using RaspiFanController.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureOpenTelemetryMetrics("raspifancontroller");
+builder.ConfigureOpenTelemetry("raspifancontroller");
 
 builder.Services.AddHealthChecks();
 builder.Services.AddRazorPages();
