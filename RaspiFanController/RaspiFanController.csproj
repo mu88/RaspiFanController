@@ -2,7 +2,7 @@
   <PropertyGroup>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
-    <CustomContainerBaseImageVersion>10.0.0</CustomContainerBaseImageVersion>
+    <CustomContainerBaseImageVersion>10.0.2</CustomContainerBaseImageVersion>
     <PublishRegularContainer>true</PublishRegularContainer>
     <PublishChiseledContainer>true</PublishChiseledContainer>
   </PropertyGroup>
