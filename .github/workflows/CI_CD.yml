@@ -14,7 +14,7 @@ jobs:
       id-token: write
       packages: write
 
-    uses: mu88/github-actions/.github/workflows/ci-cd.yml@7ed8a75c08f8e8518a225766dc2c59383c776c47
+    uses: mu88/github-actions/.github/workflows/ci-cd.yml@0213ed5565c48d2c19f9d2588dc49a79c4339a33
     with:
       docker-attest-provenance-and-sbom: true
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
@@ -29,21 +29,19 @@ jobs:
     needs: shared_ci_cd
 
     permissions:
-      attestations: write
+      attestations: write # Needed for build provenance and SBOM attestation
       contents: write # Needed to create GitHub Release
-      id-token: write
+      id-token: write # Needed for attestations
 
     steps:
       - name: Check out code
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0 # Fetch full history and tags so tools like `versionize` can determine previous tags/commits
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v5
         with:
           cache: true
-          cache-dependency-path: "**/packages.lock.json"
+          cache-dependency-path: '**/packages.lock.json'
           global-json-file: global.json
 
       - name: Build .NET single-file EXE
@@ -52,50 +50,21 @@ jobs:
             --output ${{ runner.temp }}/Release/ \
             --runtime linux-arm64 \
             --self-contained \
-            /p:PublishSingleFile=true
+            /p:PublishSingleFile=true \
+            /p:Version=${{ needs.shared_ci_cd.outputs.version }}
 
       - name: Create ZIP for release
         run: |
           cd ${{ runner.temp }}/Release/
-          zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.zip *
+          zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.version }}.zip *
 
-      - name: Determine release notes
-        id: changelog
-        if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
-        run: |
-          dotnet tool restore
-          dotnet tool run versionize changelog -v ${{ needs.shared_ci_cd.outputs.release_version }} >> ${{ runner.temp }}/release_notes.md || true
-          release_notes=$(cat ${{ runner.temp }}/release_notes.md)
-          echo "Determined release notes:"
-          echo "$release_notes"
-          if [ -z "$release_notes" ]; then
-            echo "No release notes determined, something went wrong."
-            exit 1
-          fi
-
-          # Use GitHub Actions multiline output syntax to safely pass release notes (they may contain newlines and lines starting with '*')
-          echo "changes<<EOF" >> $GITHUB_OUTPUT
-          cat ${{ runner.temp }}/release_notes.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v3
-        if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
+      - name: Generate SBOM and attest build provenance and SBOM
+        uses: mu88/github-actions/.github/actions/attest-provenance-sbom@0213ed5565c48d2c19f9d2588dc49a79c4339a33
         with:
-          subject-path: ${{ runner.temp }}/Release/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.zip
-
-      - name: Generate SBOM
-        uses: anchore/sbom-action@v0
-        with:
-          output-file: sbom.json
-          path: .
-
-      - name: Attest SBOM
-        uses: actions/attest-sbom@v3
-        if: ${{ needs.shared_ci_cd.outputs.is_release == 'true' }}
-        with:
-          sbom-path: sbom.json
-          subject-path: ${{ runner.temp }}/Release/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.zip
+          is-release: ${{ needs.shared_ci_cd.outputs.is_release }}
+          sbom-file: sbom.json
+          sbom-path: .
+          subject-path: ${{ runner.temp }}/Release/RaspiFanController.${{ needs.shared_ci_cd.outputs.version }}.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -103,7 +72,6 @@ jobs:
         with:
           files: |
             sbom.json
-            ${{ runner.temp }}/Release/RaspiFanController.${{ needs.shared_ci_cd.outputs.release_version }}.zip
-          name: ${{ needs.shared_ci_cd.outputs.release_version }}
-          tag_name: v${{ needs.shared_ci_cd.outputs.release_version }}
-          body: ${{ steps.changelog.outputs.changes }}
+            ${{ runner.temp }}/Release/RaspiFanController.${{ needs.shared_ci_cd.outputs.version }}.zip
+          name: ${{ needs.shared_ci_cd.outputs.version }}
+          body: ${{ needs.shared_ci_cd.outputs.release_notes }}
