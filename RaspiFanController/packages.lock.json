@@ -4,15 +4,15 @@
     "net10.0": {
       "Iot.Device.Bindings": {
         "type": "Direct",
-        "requested": "[4.0.1, )",
-        "resolved": "4.0.1",
-        "contentHash": "WfiSNhGDwiOtRFU5MkJhlHL6BK7O69tIyGNU9eJXEST9D3hjNfpBrgi8p6tRP/OLHkQG77ZXVCccJ3LjAwjrdg==",
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "bDSWfu/o2PME0bZKCe6KHihtlLVbSICjg2lMOqxtaFmgUGHI6KUY4q3wyOVGgTibjHcMKKvGl5MvGUwP4IrM9g==",
         "dependencies": {
-          "System.Device.Gpio": "4.0.1",
+          "System.Device.Gpio": "4.1.0",
           "System.Drawing.Common": "8.0.8",
           "System.IO.Ports": "8.0.0",
-          "System.Management": "5.0.0",
-          "UnitsNet": "5.42.0"
+          "System.Management": "8.0.0",
+          "UnitsNet": "5.74.0"
         }
       },
       "Microsoft.AspNetCore.App.Internal.Assets": {
@@ -40,9 +40,9 @@
       },
       "System.Device.Gpio": {
         "type": "Direct",
-        "requested": "[4.0.1, )",
-        "resolved": "4.0.1",
-        "contentHash": "0kLetV4AsPCDC7pDnEs20fh/GJO8CITubSmVmiuRA5bIATUuYbo7YSYbw4daEaMOPvUX9zk65GcfHmMwGWWFBg=="
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "Ip7o1kJ8B/UL5+7/21treDxue2/5Is6bfC3KWEBEYX5LH8jvRiypL1Muoe4HdEHa728Ge6t+5PZ7x02ibPp5Jg=="
       },
       "IDisposableAnalyzers": {
         "type": "Transitive",
@@ -53,11 +53,6 @@
         "type": "Transitive",
         "resolved": "2.0.277",
         "contentHash": "aqSJLLRr68eHxTLBYkWSC2Gr8KcJ/LaiC2Q7tdi8HnQhUp++dQ6ceJ5/jAmB7P6DAifPs7K7wenNQRQx1n+1ZQ=="
-      },
-      "Microsoft.NETCore.Platforms": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "VyPlqzH2wavqquTcYpkIIAQ6WdenuKoFN0BdYBbCWsclXacSOHNQn66Gt4z5NBqEYW0FAPm5rlvki9ZiCij5xQ=="
       },
       "Microsoft.Win32.SystemEvents": {
         "type": "Transitive",
@@ -177,8 +172,8 @@
       },
       "System.CodeDom": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "JPJArwA1kdj8qDAkY2XGjSWoYnqiM7q/3yRNkt6n28Mnn95MuEGkZXUbPBf7qc3IjwrGY5ttQon7yqHZyQJmOQ=="
+        "resolved": "8.0.0",
+        "contentHash": "WTlRjL6KWIMr/pAaq3rYqh0TJlzpouaQ/W1eelssHgtlwHAH25jXTkUphTYx9HaIIf7XA6qs/0+YhtLEQRkJ+Q=="
       },
       "System.Drawing.Common": {
         "type": "Transitive",
@@ -198,17 +193,16 @@
       },
       "System.Management": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "MF1CHaRcC+MLFdnDthv4/bKWBZnlnSpkGqa87pKukQefgEdwtb9zFW6zs0GjPp73qtpYYg4q6PEKbzJbxCpKfw==",
+        "resolved": "8.0.0",
+        "contentHash": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "5.0.0",
-          "System.CodeDom": "5.0.0"
+          "System.CodeDom": "8.0.0"
         }
       },
       "UnitsNet": {
         "type": "Transitive",
-        "resolved": "5.42.0",
-        "contentHash": "WCkkHsInoq531Q9yagXtfMbtceoAZzufp370iHA8aPnlnlV5E4AMn7hSFxZGGgNGhQBxmNJqJ4tBo0fm4G1TgA=="
+        "resolved": "5.74.0",
+        "contentHash": "aj5klH43LvitOz0lC+6MnVy+uj6DR8shwnzIGsmtRAhHJN6XxtC4mdn+MbkOlZ20dGgGKrIwh4LBQMAf7SL9uA=="
       }
     },
     "net10.0/linux-arm64": {
@@ -252,11 +246,10 @@
       },
       "System.Management": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "MF1CHaRcC+MLFdnDthv4/bKWBZnlnSpkGqa87pKukQefgEdwtb9zFW6zs0GjPp73qtpYYg4q6PEKbzJbxCpKfw==",
+        "resolved": "8.0.0",
+        "contentHash": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "5.0.0",
-          "System.CodeDom": "5.0.0"
+          "System.CodeDom": "8.0.0"
         }
       }
     },
@@ -301,11 +294,10 @@
       },
       "System.Management": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "MF1CHaRcC+MLFdnDthv4/bKWBZnlnSpkGqa87pKukQefgEdwtb9zFW6zs0GjPp73qtpYYg4q6PEKbzJbxCpKfw==",
+        "resolved": "8.0.0",
+        "contentHash": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "5.0.0",
-          "System.CodeDom": "5.0.0"
+          "System.CodeDom": "8.0.0"
         }
       }
     }

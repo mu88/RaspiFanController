@@ -14,7 +14,7 @@ jobs:
       id-token: write
       packages: write
 
-    uses: mu88/common/.github/workflows/ci-cd.yml@41211ccf6073933dffcf58c29b43a3462c081d1a
+    uses: mu88/common/.github/workflows/ci-cd.yml@ba12a2e9196b39b9a248d50bdcb23c0893ae1354
     with:
       docker-attest-provenance-and-sbom: true
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
@@ -59,7 +59,7 @@ jobs:
           zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.version }}.zip *
 
       - name: Generate SBOM and attest build provenance and SBOM
-        uses: mu88/common/.github/actions/attest-provenance-sbom@41211ccf6073933dffcf58c29b43a3462c081d1a
+        uses: mu88/common/.github/actions/attest-provenance-sbom@ba12a2e9196b39b9a248d50bdcb23c0893ae1354
         with:
           is-release: ${{ needs.shared_ci_cd.outputs.is_release }}
           sbom-file: sbom.json

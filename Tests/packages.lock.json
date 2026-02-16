@@ -276,11 +276,6 @@
         "resolved": "10.0.2",
         "contentHash": "QmSiO+oLBEooGgB3i0GRXyeYRDHjllqt3k365jwfZlYWhvSHA3UL2NEVV5m8aZa041eIlblo6KMI5txvTMpTwA=="
       },
-      "Microsoft.NETCore.Platforms": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "VyPlqzH2wavqquTcYpkIIAQ6WdenuKoFN0BdYBbCWsclXacSOHNQn66Gt4z5NBqEYW0FAPm5rlvki9ZiCij5xQ=="
-      },
       "Microsoft.Testing.Extensions.Telemetry": {
         "type": "Transitive",
         "resolved": "2.0.2",
@@ -492,8 +487,8 @@
       },
       "System.CodeDom": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "JPJArwA1kdj8qDAkY2XGjSWoYnqiM7q/3yRNkt6n28Mnn95MuEGkZXUbPBf7qc3IjwrGY5ttQon7yqHZyQJmOQ=="
+        "resolved": "8.0.0",
+        "contentHash": "WTlRjL6KWIMr/pAaq3rYqh0TJlzpouaQ/W1eelssHgtlwHAH25jXTkUphTYx9HaIIf7XA6qs/0+YhtLEQRkJ+Q=="
       },
       "System.Diagnostics.EventLog": {
         "type": "Transitive",
@@ -518,45 +513,44 @@
       },
       "System.Management": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "MF1CHaRcC+MLFdnDthv4/bKWBZnlnSpkGqa87pKukQefgEdwtb9zFW6zs0GjPp73qtpYYg4q6PEKbzJbxCpKfw==",
+        "resolved": "8.0.0",
+        "contentHash": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "5.0.0",
-          "System.CodeDom": "5.0.0"
+          "System.CodeDom": "8.0.0"
         }
       },
       "UnitsNet": {
         "type": "Transitive",
-        "resolved": "5.42.0",
-        "contentHash": "WCkkHsInoq531Q9yagXtfMbtceoAZzufp370iHA8aPnlnlV5E4AMn7hSFxZGGgNGhQBxmNJqJ4tBo0fm4G1TgA=="
+        "resolved": "5.74.0",
+        "contentHash": "aj5klH43LvitOz0lC+6MnVy+uj6DR8shwnzIGsmtRAhHJN6XxtC4mdn+MbkOlZ20dGgGKrIwh4LBQMAf7SL9uA=="
       },
       "raspifancontroller": {
         "type": "Project",
         "dependencies": {
-          "Iot.Device.Bindings": "[4.0.1, )",
-          "System.Device.Gpio": "[4.0.1, )",
+          "Iot.Device.Bindings": "[4.1.0, )",
+          "System.Device.Gpio": "[4.1.0, )",
           "mu88.Shared": "[7.0.0, )"
         }
       },
       "Iot.Device.Bindings": {
         "type": "CentralTransitive",
-        "requested": "[4.0.1, )",
-        "resolved": "4.0.1",
-        "contentHash": "WfiSNhGDwiOtRFU5MkJhlHL6BK7O69tIyGNU9eJXEST9D3hjNfpBrgi8p6tRP/OLHkQG77ZXVCccJ3LjAwjrdg==",
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "bDSWfu/o2PME0bZKCe6KHihtlLVbSICjg2lMOqxtaFmgUGHI6KUY4q3wyOVGgTibjHcMKKvGl5MvGUwP4IrM9g==",
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
-          "System.Device.Gpio": "4.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "System.Device.Gpio": "4.1.0",
           "System.Drawing.Common": "8.0.8",
           "System.IO.Ports": "8.0.0",
-          "System.Management": "5.0.0",
-          "UnitsNet": "5.42.0"
+          "System.Management": "8.0.0",
+          "UnitsNet": "5.74.0"
         }
       },
       "System.Device.Gpio": {
         "type": "CentralTransitive",
-        "requested": "[4.0.1, )",
-        "resolved": "4.0.1",
-        "contentHash": "0kLetV4AsPCDC7pDnEs20fh/GJO8CITubSmVmiuRA5bIATUuYbo7YSYbw4daEaMOPvUX9zk65GcfHmMwGWWFBg=="
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "Ip7o1kJ8B/UL5+7/21treDxue2/5Is6bfC3KWEBEYX5LH8jvRiypL1Muoe4HdEHa728Ge6t+5PZ7x02ibPp5Jg=="
       }
     }
   }
