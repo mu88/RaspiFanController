@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Iot.Device.Bindings" />
-    <PackageReference Include="mu88.Shared"/>
+    <PackageReference Include="mu88.Shared" />
     <PackageReference Include="System.Device.Gpio" />
   </ItemGroup>
   <ItemGroup>

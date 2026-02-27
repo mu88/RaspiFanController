@@ -25,7 +25,7 @@ public class RaspiTemperatureControllerTests
         _temperatureProviderMock.GetTemperature().Returns((currentTemperature, "C"));
         _fanControllerMock.IsFanRunning.Returns(false);
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = upperTemperatureThreshold, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = upperTemperatureThreshold, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         await testee.StartTemperatureMeasurementAsync();
@@ -39,16 +39,17 @@ public class RaspiTemperatureControllerTests
     [TestCase(29, 30, false, false)]
     [TestCase(31, 30, true, false)]
     [TestCase(29, 30, false, false)]
-    public async Task TurnFanOffInAutomaticMode(int currentTemperature,
-                                                int lowerTemperatureThreshold,
-                                                bool fanIsRunning,
-                                                bool expectedFanToBeTurnedOff)
+    public async Task TurnFanOffInAutomaticMode(
+        int currentTemperature,
+        int lowerTemperatureThreshold,
+        bool fanIsRunning,
+        bool expectedFanToBeTurnedOff)
     {
         _taskCancellationHelperMock.IsCancellationRequested.Returns(false, true);
         _temperatureProviderMock.GetTemperature().Returns((currentTemperature, "C"));
         _fanControllerMock.IsFanRunning.Returns(fanIsRunning);
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = lowerTemperatureThreshold });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = lowerTemperatureThreshold });
         var testee = CreateTestee();
 
         await testee.StartTemperatureMeasurementAsync();
@@ -64,7 +65,7 @@ public class RaspiTemperatureControllerTests
         _temperatureProviderMock.GetTemperature().Returns((39, "C"));
         _fanControllerMock.IsFanRunning.Returns(true);
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         await testee.StartTemperatureMeasurementAsync();
@@ -76,7 +77,7 @@ public class RaspiTemperatureControllerTests
     public void IsPlatformSupported()
     {
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         // ReSharper disable once UnusedVariable - Reviewed: the result is not necessary, only the call is important
@@ -89,7 +90,7 @@ public class RaspiTemperatureControllerTests
     public void TrySetUpperTemperatureThreshold()
     {
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         var result = testee.TrySetUpperTemperatureThreshold(35);
@@ -103,10 +104,7 @@ public class RaspiTemperatureControllerTests
     public void TrySetUpperTemperatureThresholdFailsForTooLowTemperature(int newUpperTemperatureThreshold, int currentLowerTemperatureThreshold)
     {
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings
-                           {
-                               RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = currentLowerTemperatureThreshold
-                           });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = currentLowerTemperatureThreshold });
         var testee = CreateTestee();
 
         var result = testee.TrySetUpperTemperatureThreshold(newUpperTemperatureThreshold);
@@ -122,7 +120,7 @@ public class RaspiTemperatureControllerTests
         _temperatureProviderMock.GetTemperature().Returns((39, "C"));
         _fanControllerMock.IsFanRunning.Returns(true);
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         await testee.StartTemperatureMeasurementAsync();
@@ -134,7 +132,7 @@ public class RaspiTemperatureControllerTests
     public void TrySetLowerTemperatureThreshold()
     {
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         var result = testee.TrySetLowerTemperatureThreshold(35);
@@ -148,10 +146,7 @@ public class RaspiTemperatureControllerTests
     public void TrySetLowerTemperatureThresholdFailsForTooHighTemperature(int newLowerTemperatureThreshold, int currentUpperTemperatureThreshold)
     {
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings
-                           {
-                               RefreshMilliseconds = 1, UpperTemperatureThreshold = currentUpperTemperatureThreshold, LowerTemperatureThreshold = 30
-                           });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = currentUpperTemperatureThreshold, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         var result = testee.TrySetLowerTemperatureThreshold(newLowerTemperatureThreshold);
@@ -164,7 +159,7 @@ public class RaspiTemperatureControllerTests
     public void SetAutomaticTemperatureRegulation()
     {
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
         testee.SetManualTemperatureRegulation(false);
 
@@ -181,7 +176,7 @@ public class RaspiTemperatureControllerTests
     {
         _fanControllerMock.IsFanRunning.Returns(isFanRunning);
         _optionsMonitorMock.CurrentValue
-                           .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
+            .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
         testee.SetManualTemperatureRegulation(fanShouldRun);
@@ -211,8 +206,8 @@ public class RaspiTemperatureControllerTests
         }
     }
 
-    private RaspiTemperatureController CreateTestee() =>
-        new(_temperatureProviderMock,
+    private RaspiTemperatureController CreateTestee()
+        => new(_temperatureProviderMock,
             _fanControllerMock,
             _taskCancellationHelperMock,
             _taskHelperMock,

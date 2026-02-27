@@ -1,23 +1,22 @@
 {
-    "stryker-config":
-    {
-        "project": "RaspiFanController.csproj",
-        "test-projects": [
-            "../Tests/Tests.csproj"
-        ],
-        "reporters": [
-            "html",
-            "progress",
-            "dashboard"
-        ],
-        "project-info": {
-            "name": "github.com/mu88/RaspiFanController"
-        },
-        "ignore-methods": [
-            "Logger.Log*"
-        ],
-        "mutate": [
-            "!**/Program.cs"
-        ]
-    }
+  "stryker-config": {
+    "project": "RaspiFanController.csproj",
+    "test-projects": [
+      "../Tests/Tests.csproj"
+    ],
+    "reporters": [
+      "html",
+      "progress",
+      "dashboard"
+    ],
+    "project-info": {
+      "name": "github.com/mu88/RaspiFanController"
+    },
+    "ignore-methods": [
+      "Logger.Log*"
+    ],
+    "mutate": [
+      "!**/Program.cs"
+    ]
+  }
 }

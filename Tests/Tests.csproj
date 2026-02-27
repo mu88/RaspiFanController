@@ -5,14 +5,14 @@
     <NoWarn>$(NoWarn);IDISP001;IDISP004;MA0012</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CliWrap"/>
+    <PackageReference Include="CliWrap" />
     <PackageReference Include="coverlet.msbuild">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="FluentAssertions.Web.v8"/>
-    <PackageReference Include="mu88.Shared"/>
+    <PackageReference Include="FluentAssertions.Web.v8" />
+    <PackageReference Include="mu88.Shared" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter">
@@ -20,14 +20,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Testcontainers"/>
+    <PackageReference Include="Testcontainers" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RaspiFanController\RaspiFanController.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="TestResults\**"/>
-    <EmbeddedResource Remove="TestResults\**"/>
-    <None Remove="TestResults\**"/>
+    <Compile Remove="TestResults\**" />
+    <EmbeddedResource Remove="TestResults\**" />
+    <None Remove="TestResults\**" />
   </ItemGroup>
 </Project>

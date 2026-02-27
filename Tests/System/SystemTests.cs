@@ -75,19 +75,19 @@ public class SystemTests
         var rootDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.Parent ?? throw new NullReferenceException();
         var projectFile = Path.Join(rootDirectory.FullName, "RaspiFanController", "RaspiFanController.csproj");
         var buildResult = await Cli.Wrap("dotnet")
-                                   .WithArguments([
-                                       "publish",
-                                       $"{projectFile}",
-                                       "--os",
-                                       "linux",
-                                       "--arch",
-                                       "amd64",
-                                       "/t:PublishContainersForMultipleFamilies",
-                                       $"/p:ReleaseVersion={containerImageTag}",
-                                       "/p:IsRelease=false",
-                                       "/p:DoNotApplyGitHubScope=true"
-                                   ])
-                                   .ExecuteBufferedAsync(cancellationToken);
+            .WithArguments([
+                "publish",
+                $"{projectFile}",
+                "--os",
+                "linux",
+                "--arch",
+                "amd64",
+                "/t:PublishContainersForMultipleFamilies",
+                $"/p:ReleaseVersion={containerImageTag}",
+                "/p:IsRelease=false",
+                "/p:DoNotApplyGitHubScope=true"
+            ])
+            .ExecuteBufferedAsync(cancellationToken);
         buildResult.IsSuccess.Should().BeTrue();
         Console.WriteLine(buildResult.StandardOutput);
     }
@@ -107,14 +107,14 @@ public class SystemTests
         return container;
     }
 
-    private static IContainer BuildAppContainer(INetwork network, string containerImageTag) =>
-        new ContainerBuilder($"raspifancontroller:{containerImageTag}-chiseled")
+    private static IContainer BuildAppContainer(INetwork network, string containerImageTag)
+        => new ContainerBuilder($"raspifancontroller:{containerImageTag}-chiseled")
             .WithNetwork(network)
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development") // this enables the faked temperature and fan controller as we're not on a real Raspi
             .WithPortBinding(8080, true)
             .WithWaitStrategy(Wait.ForUnixContainer()
-                                  .UntilMessageIsLogged("Content root path: /app",
-                                      strategy => strategy.WithTimeout(TimeSpan.FromSeconds(30)))) // as it's a chiseled container, waiting for the port does not work
+                .UntilMessageIsLogged("Content root path: /app",
+                    strategy => strategy.WithTimeout(TimeSpan.FromSeconds(30)))) // as it's a chiseled container, waiting for the port does not work
             .Build();
 
     private static Uri GetAppBaseAddress(IContainer container) => new($"http://{container.Hostname}:{container.GetMappedPublicPort(8080)}/cool");
