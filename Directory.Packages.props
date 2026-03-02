@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="CliWrap" Version="3.10.0" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
+    <PackageVersion Include="coverlet.msbuild" Version="8.0.0" />
     <PackageVersion Include="FluentAssertions" Version="8.8.0" />
     <PackageVersion Include="FluentAssertions.Web.v8" Version="1.9.5" />
     <PackageVersion Include="Iot.Device.Bindings" Version="4.1.0" />
