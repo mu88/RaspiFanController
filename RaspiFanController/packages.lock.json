@@ -17,9 +17,9 @@
       },
       "Microsoft.AspNetCore.App.Internal.Assets": {
         "type": "Direct",
-        "requested": "[10.0.2, )",
-        "resolved": "10.0.2",
-        "contentHash": "fMAqrUm+aspxRAsCJ6Hlgs96XSHwNIr9HBNt7wyBAzQkPlfE7w+0C4NzDoJnso5YZyDI0VcRtEXxG9odt3KiZA=="
+        "requested": "[10.0.3, )",
+        "resolved": "10.0.3",
+        "contentHash": "mr3Zn+ht8lijYvlMIasftw9opU9hsLKDdnOgQMmYI3RjWPJLOF9l8+YHDseRkTs97wOrULmJgo/NDCmzL/EGDg=="
       },
       "mu88.Shared": {
         "type": "Direct",
