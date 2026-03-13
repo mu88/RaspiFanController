@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureOpenTelemetry("raspifancontroller", builder.Configuration);
 
 builder.Services.AddHealthChecks();
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 builder.Services.AddHostedService<Worker>();
 builder.Services.AddSingleton<RaspiTemperatureController>();
 builder.Services.AddSingleton<ITaskHelper, TaskHelper>();
@@ -34,21 +34,18 @@ if (!string.IsNullOrEmpty(appPathBase))
     app.UsePathBase(appPathBase);
 }
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-}
-else
-{
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
 }
 
-app.UseStaticFiles();
-app.UseRouting();
+app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-app.MapControllers();
+app.UseAntiforgery();
+
+app.MapStaticAssets();
+app.MapRazorComponents<RaspiFanController.Components.App>()
+    .AddInteractiveServerRenderMode();
 app.MapHealthChecks("/healthz");
 
 await app.RunAsync();
