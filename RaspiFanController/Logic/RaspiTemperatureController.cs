@@ -2,7 +2,7 @@
 
 namespace RaspiFanController.Logic;
 
-public class RaspiTemperatureController(
+public partial class RaspiTemperatureController(
     ITemperatureProvider temperatureProvider,
     IFanController fanController,
     ITaskCancellationHelper taskCancellationHelper,
@@ -42,21 +42,15 @@ public class RaspiTemperatureController(
     {
         RegulationMode = RegulationMode.Manual;
 
-        if (fanShouldRun)
+        if (fanShouldRun && !IsFanRunning)
         {
-            if (!IsFanRunning)
-            {
-                fanController.TurnFanOn();
-                logger.LogDebug("Set manual mode and turned on");
-            }
+            fanController.TurnFanOn();
+            logger.LogDebug("Set manual mode and turned on");
         }
-        else
+        else if (!fanShouldRun && IsFanRunning)
         {
-            if (IsFanRunning)
-            {
-                fanController.TurnFanOff();
-                logger.LogDebug("Set manual mode and turned on");
-            }
+            fanController.TurnFanOff();
+            logger.LogDebug("Set manual mode and turned off");
         }
     }
 
@@ -78,23 +72,21 @@ public class RaspiTemperatureController(
         while (!taskCancellationHelper.IsCancellationRequested)
         {
             (CurrentTemperature, Unit) = temperatureProvider.GetTemperature();
-            logger.LogDebug("Current: {CurrentTemperature}°{Unit}", CurrentTemperature, Unit);
+            LogCurrentTemperature(CurrentTemperature, Unit);
 
-            if (RegulationMode == RegulationMode.Automatic)
+            if (RegulationMode == RegulationMode.Automatic
+                && CurrentTemperature >= UpperTemperatureThreshold
+                && !fanController.IsFanRunning)
             {
-                if (CurrentTemperature >= UpperTemperatureThreshold)
-                {
-                    if (!fanController.IsFanRunning)
-                    {
-                        fanController.TurnFanOn();
-                        logger.LogDebug("Turned fan on in automatic mode");
-                    }
-                }
-                else if (CurrentTemperature < LowerTemperatureThreshold && IsFanRunning)
-                {
-                    fanController.TurnFanOff();
-                    logger.LogDebug("Turned fan off in automatic mode");
-                }
+                fanController.TurnFanOn();
+                logger.LogDebug("Turned fan on in automatic mode");
+            }
+            else if (RegulationMode == RegulationMode.Automatic
+                     && CurrentTemperature < LowerTemperatureThreshold
+                     && IsFanRunning)
+            {
+                fanController.TurnFanOff();
+                logger.LogDebug("Turned fan off in automatic mode");
             }
 
             await taskHelper.DelayAsync(RefreshMilliseconds, taskCancellationHelper.CancellationToken);
@@ -113,4 +105,7 @@ public class RaspiTemperatureController(
 
         return true;
     }
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Current: {CurrentTemperature}°{Unit}")]
+    private partial void LogCurrentTemperature(double currentTemperature, string unit);
 }

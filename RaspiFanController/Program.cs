@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using mu88.Shared.OpenTelemetry;
+﻿using mu88.Shared.OpenTelemetry;
 using RaspiFanController.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +48,3 @@ app.MapRazorComponents<RaspiFanController.Components.App>()
 app.MapHealthChecks("/healthz");
 
 await app.RunAsync();
-
-[ExcludeFromCodeCoverage]
-[SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1106:Code should not contain empty statements", Justification = "Necessary for coverage")]
-public partial class Program;

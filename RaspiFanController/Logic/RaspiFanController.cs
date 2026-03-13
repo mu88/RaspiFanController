@@ -5,11 +5,13 @@ using Microsoft.Extensions.Options;
 namespace RaspiFanController.Logic;
 
 [ExcludeFromCodeCoverage]
-public class RaspiFanController : IFanController
+public partial class RaspiFanController : IFanController
 {
+    private readonly ILogger<RaspiFanController> _logger;
+
     public RaspiFanController(ILogger<RaspiFanController> logger, IOptionsMonitor<AppSettings> settings)
     {
-        Logger = logger;
+        _logger = logger;
         GpioPin = settings.CurrentValue.GpioPin;
 
         using var gpioController = new GpioController();
@@ -17,13 +19,11 @@ public class RaspiFanController : IFanController
         var initialValue = gpioController.Read(GpioPin) == PinValue.High;
         IsFanRunning = initialValue;
 
-        logger.LogInformation("Initial value: {InitialValue}", initialValue);
+        LogInitialValue(initialValue);
     }
 
     /// <inheritdoc />
     public bool IsFanRunning { get; private set; }
-
-    private ILogger<RaspiFanController> Logger { get; }
 
     private int GpioPin { get; }
 
@@ -35,7 +35,7 @@ public class RaspiFanController : IFanController
         gpioController.Write(GpioPin, PinValue.High);
         IsFanRunning = true;
 
-        Logger.LogInformation("Fan turned on");
+        _logger.LogInformation("Fan turned on");
     }
 
     /// <inheritdoc />
@@ -46,6 +46,9 @@ public class RaspiFanController : IFanController
         gpioController.Write(GpioPin, PinValue.Low);
         IsFanRunning = false;
 
-        Logger.LogInformation("Fan turned off");
+        _logger.LogInformation("Fan turned off");
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Initial value: {InitialValue}")]
+    private partial void LogInitialValue(bool initialValue);
 }

@@ -4,10 +4,10 @@ using Iot.Device.CpuTemperature;
 namespace RaspiFanController.Logic;
 
 [ExcludeFromCodeCoverage]
-public class RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger) : ITemperatureProvider
+public partial class RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger) : ITemperatureProvider
 {
     /// <inheritdoc />
-    public (double, string) GetTemperature()
+    public (double Temperature, string Unit) GetTemperature()
     {
         using var cpuTemperature = new CpuTemperature();
         var temperatureObject = cpuTemperature.ReadTemperatures()[0];
@@ -18,7 +18,10 @@ public class RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> logger) 
     public bool IsPlatformSupported()
     {
         var isPlatformSupported = OperatingSystem.IsLinux();
-        logger.LogDebug("Is platform supported: {IsPlatformSupported}", isPlatformSupported);
+        LogIsPlatformSupported(isPlatformSupported);
         return isPlatformSupported;
     }
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Is platform supported: {IsPlatformSupported}")]
+    private partial void LogIsPlatformSupported(bool isPlatformSupported);
 }

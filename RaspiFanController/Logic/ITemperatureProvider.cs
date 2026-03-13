@@ -2,7 +2,7 @@
 
 public interface ITemperatureProvider
 {
-    (double, string) GetTemperature();
+    (double Temperature, string Unit) GetTemperature();
 
     bool IsPlatformSupported();
 }

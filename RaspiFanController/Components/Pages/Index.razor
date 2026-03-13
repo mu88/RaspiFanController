@@ -144,7 +144,11 @@
     </div>
 </div>
 
+@implements IDisposable
+
 @code {
+
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     private RegulationMode RegulationMode { get; set; }
 
@@ -180,12 +184,12 @@
         AllowManualControl = RaspiTemperatureController.RegulationMode == RegulationMode.Manual;
         IsPlatformSupported = RaspiTemperatureController.IsPlatformSupported;
 
-        StartPollingAsync();
+        _ = StartPollingAsync(_cancellationTokenSource.Token);
     }
 
-    private async void StartPollingAsync()
+    private async Task StartPollingAsync(CancellationToken cancellationToken)
     {
-        while (true)
+        while (!cancellationToken.IsCancellationRequested)
         {
             Temperature = $"{RaspiTemperatureController.CurrentTemperature:F1}";
             UpperTemperatureThreshold = RaspiTemperatureController.UpperTemperatureThreshold;
@@ -197,8 +201,14 @@
 
             StateHasChanged();
 
-            await Task.Delay(RaspiTemperatureController.RefreshMilliseconds);
+            await Task.Delay(RaspiTemperatureController.RefreshMilliseconds, cancellationToken);
         }
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
     }
 
     private void ModeChanged(ChangeEventArgs changeEventArgs)
