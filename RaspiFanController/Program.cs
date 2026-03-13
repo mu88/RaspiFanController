@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureOpenTelemetry("raspifancontroller", builder.Configuration);
 
 builder.Services.AddHealthChecks();
+builder.Services.AddAntiforgery(options => options.Cookie.Path = "/");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHostedService<Worker>();
@@ -27,11 +28,8 @@ else
 
 var app = builder.Build();
 
-var appPathBase = builder.Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>()?.AppPathBase;
-if (!string.IsNullOrEmpty(appPathBase))
-{
-    app.UsePathBase(appPathBase);
-}
+app.UsePathBase("/cool");
+app.UseRouting();
 
 if (!app.Environment.IsDevelopment())
 {

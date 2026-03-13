@@ -75,7 +75,6 @@ Within `appsettings.json`, the following app parameters can be controlled:
 * `UpperTemperatureThreshold` → When this temperature is exceeded, the fan will be turned on.
 * `LowerTemperatureThreshold` → When this temperature is undershot, the fan will be turned off.
 * `GpioPin` → The GPIO pin that will control the transistor and therefore turning the fan on/off.
-* `AppPathBase` → This path will be used as the app's path base, see [`UsePathBase()`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.usepathbaseextensions.usepathbase?f1url=https%3A%2F%2Fmsdn.microsoft.com%2Fquery%2Fdev16.query%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(Microsoft.AspNetCore.Builder.UsePathBaseExtensions.UsePathBase);k(DevLang-csharp)%26rd%3Dtrue%26f%3D255%26MSPPError%3D-2147217396&view=aspnetcore-3.1).
 
 These parameters are read on app startup. When the app is running, they can be overridden via http://localhost:8080/cool, but they won't be written to `appsettings.json`.
 
