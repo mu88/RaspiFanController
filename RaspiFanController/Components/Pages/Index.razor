@@ -148,7 +148,7 @@
 
 @code {
 
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private System.Threading.Timer? _timer;
 
     private RegulationMode RegulationMode { get; set; }
 
@@ -183,32 +183,42 @@
 
         AllowManualControl = RaspiTemperatureController.RegulationMode == RegulationMode.Manual;
         IsPlatformSupported = RaspiTemperatureController.IsPlatformSupported;
-
-        _ = StartPollingAsync(_cancellationTokenSource.Token);
+        LoadData();
     }
 
-    private async Task StartPollingAsync(CancellationToken cancellationToken)
+    /// <inheritdoc />
+    protected override void OnAfterRender(bool firstRender)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        if (firstRender)
         {
-            Temperature = $"{RaspiTemperatureController.CurrentTemperature:F1}";
-            UpperTemperatureThreshold = RaspiTemperatureController.UpperTemperatureThreshold;
-            LowerTemperatureThreshold = RaspiTemperatureController.LowerTemperatureThreshold;
-            Unit = RaspiTemperatureController.Unit;
-            RegulationMode = RaspiTemperatureController.RegulationMode;
-            FanIsRunning = RaspiTemperatureController.IsFanRunning;
-            Uptime = RaspiTemperatureController.Uptime;
-
-            StateHasChanged();
-
-            await Task.Delay(RaspiTemperatureController.RefreshMilliseconds, cancellationToken);
+            var interval = RaspiTemperatureController.RefreshMilliseconds;
+            _timer = new System.Threading.Timer(OnTimerElapsed, null, interval, interval);
         }
+    }
+
+    private void OnTimerElapsed(object? state)
+    {
+        _ = InvokeAsync(() =>
+        {
+            LoadData();
+            StateHasChanged();
+        });
+    }
+
+    private void LoadData()
+    {
+        Temperature = $"{RaspiTemperatureController.CurrentTemperature:F1}";
+        UpperTemperatureThreshold = RaspiTemperatureController.UpperTemperatureThreshold;
+        LowerTemperatureThreshold = RaspiTemperatureController.LowerTemperatureThreshold;
+        Unit = RaspiTemperatureController.Unit;
+        RegulationMode = RaspiTemperatureController.RegulationMode;
+        FanIsRunning = RaspiTemperatureController.IsFanRunning;
+        Uptime = RaspiTemperatureController.Uptime;
     }
 
     public void Dispose()
     {
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
+        _timer?.Dispose();
     }
 
     private void ModeChanged(ChangeEventArgs changeEventArgs)

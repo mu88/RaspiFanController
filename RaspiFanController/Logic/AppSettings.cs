@@ -14,6 +14,4 @@ public class AppSettings
     public int LowerTemperatureThreshold { get; set; }
 
     public int GpioPin { get; set; }
-
-    public string AppPathBase { get; set; } = string.Empty;
 }
