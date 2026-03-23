@@ -6,7 +6,7 @@ public partial class RaspiTemperatureController(
     ITemperatureProvider temperatureProvider,
     IFanController fanController,
     ITaskCancellationHelper taskCancellationHelper,
-    ITaskHelper taskHelper,
+    TimeProvider timeProvider,
     ILogger<RaspiTemperatureController> logger,
     IOptionsMonitor<AppSettings> settings)
 {
@@ -16,7 +16,7 @@ public partial class RaspiTemperatureController(
 
     public bool IsFanRunning => fanController.IsFanRunning;
 
-    public TimeSpan Uptime => DateTime.Now - StartTime;
+    public TimeSpan Uptime => timeProvider.GetUtcNow() - StartTime;
 
     public int LowerTemperatureThreshold { get; private set; } = settings.CurrentValue.LowerTemperatureThreshold;
 
@@ -30,7 +30,7 @@ public partial class RaspiTemperatureController(
 
     public int UpperTemperatureThreshold { get; private set; } = settings.CurrentValue.UpperTemperatureThreshold;
 
-    private DateTime StartTime { get; } = DateTime.Now;
+    private DateTimeOffset StartTime { get; } = timeProvider.GetUtcNow();
 
     public void SetAutomaticTemperatureRegulation()
     {
@@ -89,7 +89,7 @@ public partial class RaspiTemperatureController(
                 logger.LogDebug("Turned fan off in automatic mode");
             }
 
-            await taskHelper.DelayAsync(RefreshMilliseconds, taskCancellationHelper.CancellationToken);
+            await Task.Delay(TimeSpan.FromMilliseconds(RefreshMilliseconds), timeProvider, taskCancellationHelper.CancellationToken);
         }
     }
 

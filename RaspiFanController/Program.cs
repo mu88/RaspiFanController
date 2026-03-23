@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHostedService<Worker>();
 builder.Services.AddSingleton<RaspiTemperatureController>();
-builder.Services.AddSingleton<ITaskHelper, TaskHelper>();
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<ITaskCancellationHelper, TaskCancellationHelper>();
 builder.Services.AddOptions<AppSettings>().Bind(builder.Configuration.GetSection(AppSettings.SectionName));
 

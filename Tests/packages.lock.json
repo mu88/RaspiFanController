@@ -31,6 +31,12 @@
           "Newtonsoft.Json": "13.0.3"
         }
       },
+      "Microsoft.Extensions.TimeProvider.Testing": {
+        "type": "Direct",
+        "requested": "[9.5.0, )",
+        "resolved": "9.5.0",
+        "contentHash": "GeBc+Wnf97pUsOHaGQ5rnu55IboYCZweHTrf4YGzO3hPnbsYR18/igMUh5cr0keGW9U3yWuIP7UAO1mXd1prig=="
+      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[18.3.0, )",

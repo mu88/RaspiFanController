@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using NUnit.Framework;
 using RaspiFanController.Logic;
@@ -15,7 +16,7 @@ public class RaspiTemperatureControllerTests
     private readonly ITemperatureProvider _temperatureProviderMock = Substitute.For<ITemperatureProvider>();
     private readonly IFanController _fanControllerMock = Substitute.For<IFanController>();
     private readonly IOptionsMonitor<AppSettings> _optionsMonitorMock = Substitute.For<IOptionsMonitor<AppSettings>>();
-    private readonly ITaskHelper _taskHelperMock = Substitute.For<ITaskHelper>();
+    private readonly FakeTimeProvider _fakeTimeProvider = new();
 
     [TestCase(61, 40)]
     [TestCase(61, 61)]
@@ -28,10 +29,14 @@ public class RaspiTemperatureControllerTests
             .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = upperTemperatureThreshold, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
-        await testee.StartTemperatureMeasurementAsync();
+        var task = testee.StartTemperatureMeasurementAsync();
+
+        // Verify that the delay is actually awaited
+        task.IsCompleted.Should().BeFalse();
+        _fakeTimeProvider.Advance(TimeSpan.FromMilliseconds(1));
+        await task;
 
         _fanControllerMock.Received(1).TurnFanOn();
-        await _taskHelperMock.Received(1).DelayAsync(testee.RefreshMilliseconds, Arg.Any<CancellationToken>());
     }
 
     [TestCase(29, 30, true, true)]
@@ -52,10 +57,14 @@ public class RaspiTemperatureControllerTests
             .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = lowerTemperatureThreshold });
         var testee = CreateTestee();
 
-        await testee.StartTemperatureMeasurementAsync();
+        var task = testee.StartTemperatureMeasurementAsync();
+
+        // Verify that the delay is actually awaited
+        task.IsCompleted.Should().BeFalse();
+        _fakeTimeProvider.Advance(TimeSpan.FromMilliseconds(1));
+        await task;
 
         _fanControllerMock.Received(expectedFanToBeTurnedOff ? 1 : 0).TurnFanOff();
-        await _taskHelperMock.Received(1).DelayAsync(testee.RefreshMilliseconds, Arg.Any<CancellationToken>());
     }
 
     [Test]
@@ -68,7 +77,9 @@ public class RaspiTemperatureControllerTests
             .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
-        await testee.StartTemperatureMeasurementAsync();
+        var task = testee.StartTemperatureMeasurementAsync();
+        _fakeTimeProvider.Advance(TimeSpan.FromMilliseconds(1));
+        await task;
 
         testee.Unit.Should().Be("C");
     }
@@ -123,7 +134,9 @@ public class RaspiTemperatureControllerTests
             .Returns(new AppSettings { RefreshMilliseconds = 1, UpperTemperatureThreshold = 40, LowerTemperatureThreshold = 30 });
         var testee = CreateTestee();
 
-        await testee.StartTemperatureMeasurementAsync();
+        var task = testee.StartTemperatureMeasurementAsync();
+        _fakeTimeProvider.Advance(TimeSpan.FromMilliseconds(1));
+        await task;
 
         testee.Uptime.Should().BePositive();
     }
@@ -210,7 +223,7 @@ public class RaspiTemperatureControllerTests
         => new(_temperatureProviderMock,
             _fanControllerMock,
             _taskCancellationHelperMock,
-            _taskHelperMock,
+            _fakeTimeProvider,
             Substitute.For<ILogger<RaspiTemperatureController>>(),
             _optionsMonitorMock);
 }
