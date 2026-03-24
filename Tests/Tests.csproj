@@ -6,10 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CliWrap" />
-    <PackageReference Include="coverlet.msbuild">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="FluentAssertions.Web.v8" />
     <PackageReference Include="mu88.Shared" />

@@ -14,7 +14,7 @@ jobs:
       id-token: write
       packages: write
 
-    uses: mu88/common/.github/workflows/ci-cd.yml@ab8025d2f12c1c61fe3cc68d6abca8de03e3002d
+    uses: mu88/common/.github/workflows/ci-cd.yml@74ae161be67791a743a890c0a0ee2a2088ef1042
     with:
       docker-attest-provenance-and-sbom: true
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
