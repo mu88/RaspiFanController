@@ -59,7 +59,7 @@ jobs:
           zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.version }}.zip *
 
       - name: Generate SBOM and attest build provenance and SBOM
-        uses: mu88/common/.github/actions/attest-provenance-sbom@ab8025d2f12c1c61fe3cc68d6abca8de03e3002d
+        uses: mu88/common/.github/actions/attest-provenance-sbom@74ae161be67791a743a890c0a0ee2a2088ef1042
         with:
           is-release: ${{ needs.shared_ci_cd.outputs.is_release }}
           sbom-file: sbom.json
