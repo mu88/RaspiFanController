@@ -3,12 +3,9 @@
 namespace RaspiFanController.Logic;
 
 [ExcludeFromCodeCoverage]
-public class Worker(RaspiTemperatureController raspiTemperatureController, ITaskCancellationHelper taskCancellationHelper) : BackgroundService
+internal class Worker(IRaspiTemperatureController raspiTemperatureController) : BackgroundService
 {
     /// <inheritdoc />
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        taskCancellationHelper.SetCancellationToken(stoppingToken);
-        await raspiTemperatureController.StartTemperatureMeasurementAsync();
-    }
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        => raspiTemperatureController.StartTemperatureMeasurementAsync(stoppingToken);
 }

@@ -10,8 +10,16 @@ public partial class RaspiTemperatureProvider(ILogger<RaspiTemperatureProvider> 
     public (double Temperature, string Unit) GetTemperature()
     {
         using var cpuTemperature = new CpuTemperature();
-        var temperatureObject = cpuTemperature.ReadTemperatures()[0];
-        return !double.IsNaN(temperatureObject.Temperature.DegreesCelsius) ? (temperatureObject.Temperature.DegreesCelsius, "C") : (double.NaN, "#");
+        var temperatures = cpuTemperature.ReadTemperatures();
+        if (temperatures.Count == 0)
+        {
+            return (double.NaN, "#");
+        }
+
+        var temperatureObject = temperatures[0];
+        return !double.IsNaN(temperatureObject.Temperature.DegreesCelsius)
+            ? (temperatureObject.Temperature.DegreesCelsius, "C")
+            : (double.NaN, "#");
     }
 
     /// <inheritdoc />

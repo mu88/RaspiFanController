@@ -12,6 +12,6 @@
   <s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File460E6E0B1DE3BC4E81ACD79B98E2BC2B/RelativePriority/@EntryValue">2</s:Double>
   <s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File5E21941E2FA76444BB9F013F0923D06B/@KeyIndexDefined">True</s:Boolean>
   <s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File5E21941E2FA76444BB9F013F0923D06B/RelativePriority/@EntryValue">1</s:Double>
-	<s:Boolean x:Key="/Default/UserDictionary/Words/=Gpio/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/UserDictionary/Words/=Gpio/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Raspi/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Uptime/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -1,12 +1,11 @@
-﻿@page "/"
-@using RaspiFanController.Logic
-@inject RaspiTemperatureController RaspiTemperatureController
+@page "/"
+@implements IDisposable
+@using System.Globalization
 
 <div class="container">
     @if (HasError)
     {
         <div class="row">
-
             <div class="alert alert-danger" role="alert">
                 Error message: @ErrorMessage
             </div>
@@ -85,34 +84,18 @@
                                 <div class="row">
                                     <legend class="col-form-label col-7 pt-0">Fan</legend>
                                     <div class="col-5">
-                                        @if (AllowManualControl)
-                                        {
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="fanIsRunning" checked="@(FanIsRunning)" value="True"
-                                                           @onchange="FanIsRunningChanged"/> Turn On
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="fanIsRunning" checked="@(!FanIsRunning)" value="False"
-                                                           @onchange="FanIsRunningChanged"/> Turn Off
-                                                </label>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="fanIsRunning" checked="@(FanIsRunning)" disabled/> Turn On
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="fanIsRunning" checked="@(!FanIsRunning)" disabled/> Turn Off
-                                                </label>
-                                            </div>
-                                        }
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="fanIsRunning" checked="@(FanIsRunning)" value="True"
+                                                       disabled="@(!AllowManualControl)" @onchange="FanIsRunningChanged"/> Turn On
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="fanIsRunning" checked="@(!FanIsRunning)" value="False"
+                                                       disabled="@(!AllowManualControl)" @onchange="FanIsRunningChanged"/> Turn Off
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -144,11 +127,17 @@
     </div>
 </div>
 
-@implements IDisposable
-
 @code {
+    private ITimer? _timer;
 
-    private System.Threading.Timer? _timer;
+    [Inject]
+    private IRaspiTemperatureController RaspiTemperatureController { get; set; } = null!;
+
+    [Inject]
+    private TimeProvider TimeProvider { get; set; } = null!;
+
+    [Inject]
+    private ILogger<Index> Logger { get; set; } = null!;
 
     private RegulationMode RegulationMode { get; set; }
 
@@ -176,6 +165,8 @@
 
     private TimeSpan Uptime { get; set; }
 
+    public void Dispose() => _timer?.Dispose();
+
     /// <inheritdoc />
     protected override void OnInitialized()
     {
@@ -191,8 +182,9 @@
     {
         if (firstRender)
         {
-            var interval = RaspiTemperatureController.RefreshMilliseconds;
-            _timer = new System.Threading.Timer(OnTimerElapsed, null, interval, interval);
+            var interval = TimeSpan.FromMilliseconds(RaspiTemperatureController.RefreshMilliseconds);
+            _timer?.Dispose();
+            _timer = TimeProvider.CreateTimer(OnTimerElapsed, null, interval, interval);
         }
     }
 
@@ -200,25 +192,29 @@
     {
         _ = InvokeAsync(() =>
         {
-            LoadData();
-            StateHasChanged();
+            try
+            {
+                LoadData();
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                LogRefreshError(Logger, ex);
+            }
         });
     }
 
     private void LoadData()
     {
+        #pragma warning disable MA0076
         Temperature = $"{RaspiTemperatureController.CurrentTemperature:F1}";
+        #pragma warning restore MA0076
         UpperTemperatureThreshold = RaspiTemperatureController.UpperTemperatureThreshold;
         LowerTemperatureThreshold = RaspiTemperatureController.LowerTemperatureThreshold;
         Unit = RaspiTemperatureController.Unit;
         RegulationMode = RaspiTemperatureController.RegulationMode;
         FanIsRunning = RaspiTemperatureController.IsFanRunning;
         Uptime = RaspiTemperatureController.Uptime;
-    }
-
-    public void Dispose()
-    {
-        _timer?.Dispose();
     }
 
     private void ModeChanged(ChangeEventArgs changeEventArgs)
@@ -230,6 +226,7 @@
                 AllowManualControl = false;
                 break;
             case "Manual":
+                RaspiTemperatureController.SetManualTemperatureRegulation(FanIsRunning);
                 AllowManualControl = true;
                 break;
         }
@@ -237,12 +234,14 @@
 
     private void UpperTemperatureThresholdChanged(ChangeEventArgs changeEventArgs)
     {
-        if (int.TryParse(changeEventArgs.Value?.ToString(), out var result))
+        if (int.TryParse(changeEventArgs.Value?.ToString(), CultureInfo.InvariantCulture, out var result))
         {
             ErrorMessage = string.Empty;
             if (!RaspiTemperatureController.TrySetUpperTemperatureThreshold(result))
             {
+                #pragma warning disable MA0076
                 ErrorMessage = $"Please enter a temperature higher than {LowerTemperatureThreshold}°{Unit}";
+                #pragma warning restore MA0076
             }
         }
         else
@@ -253,12 +252,14 @@
 
     private void LowerTemperatureThresholdChanged(ChangeEventArgs changeEventArgs)
     {
-        if (int.TryParse(changeEventArgs.Value?.ToString(), out var result))
+        if (int.TryParse(changeEventArgs.Value?.ToString(), CultureInfo.InvariantCulture, out var result))
         {
             ErrorMessage = string.Empty;
             if (!RaspiTemperatureController.TrySetLowerTemperatureThreshold(result))
             {
+                #pragma warning disable MA0076
                 ErrorMessage = $"Please enter a temperature lower than {UpperTemperatureThreshold}°{Unit}";
+                #pragma warning restore MA0076
             }
         }
         else
@@ -275,9 +276,8 @@
         }
         else
         {
-            // Fallback to avoid overheating
+            LogFanStateParseFailure(Logger, changeEventArgs.Value?.ToString());
             RaspiTemperatureController.SetManualTemperatureRegulation(true);
         }
     }
-
 }

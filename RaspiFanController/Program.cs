@@ -10,10 +10,12 @@ builder.Services.AddAntiforgery(options => options.Cookie.Path = "/");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHostedService<Worker>();
-builder.Services.AddSingleton<RaspiTemperatureController>();
+builder.Services.AddSingleton<IRaspiTemperatureController, RaspiTemperatureController>();
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddSingleton<ITaskCancellationHelper, TaskCancellationHelper>();
-builder.Services.AddOptions<AppSettings>().Bind(builder.Configuration.GetSection(AppSettings.SectionName));
+builder.Services.AddOptions<AppSettings>()
+    .Bind(builder.Configuration.GetSection(AppSettings.SectionName))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 if (builder.Environment.IsDevelopment())
 {

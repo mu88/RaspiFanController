@@ -7,6 +7,10 @@
     <PublishChiseledContainer>true</PublishChiseledContainer>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Iot.Device.Bindings" />
     <PackageReference Include="mu88.Shared" />
     <PackageReference Include="System.Device.Gpio" />

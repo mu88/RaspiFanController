@@ -5,18 +5,20 @@ using Microsoft.Extensions.Options;
 namespace RaspiFanController.Logic;
 
 [ExcludeFromCodeCoverage]
-public partial class RaspiFanController : IFanController
+internal sealed partial class RaspiFanController : IFanController, IDisposable
 {
     private readonly ILogger<RaspiFanController> _logger;
+    private readonly GpioController _gpioController = new();
+    private readonly GpioPin _gpioPin;
 
-    public RaspiFanController(ILogger<RaspiFanController> logger, IOptionsMonitor<AppSettings> settings)
+    public RaspiFanController(ILogger<RaspiFanController> logger, IOptions<AppSettings> settings)
     {
         _logger = logger;
-        GpioPin = settings.CurrentValue.GpioPin;
+        GpioPin = settings.Value.GpioPin;
 
-        using var gpioController = new GpioController();
-        using var openPin = gpioController.OpenPin(GpioPin, PinMode.Input);
-        var initialValue = gpioController.Read(GpioPin) == PinValue.High;
+        _gpioPin = _gpioController.OpenPin(GpioPin, PinMode.Input);
+        var initialValue = _gpioController.Read(GpioPin) == PinValue.High;
+        _gpioController.SetPinMode(GpioPin, PinMode.Output);
         IsFanRunning = initialValue;
 
         LogInitialValue(initialValue);
@@ -30,25 +32,33 @@ public partial class RaspiFanController : IFanController
     /// <inheritdoc />
     public void TurnFanOn()
     {
-        using var gpioController = new GpioController();
-        using var openPin = gpioController.OpenPin(GpioPin, PinMode.Output);
-        gpioController.Write(GpioPin, PinValue.High);
+        _gpioController.Write(GpioPin, PinValue.High);
         IsFanRunning = true;
 
-        _logger.LogInformation("Fan turned on");
+        LogFanTurnedOn();
     }
 
     /// <inheritdoc />
     public void TurnFanOff()
     {
-        using var gpioController = new GpioController();
-        using var openPin = gpioController.OpenPin(GpioPin, PinMode.Output);
-        gpioController.Write(GpioPin, PinValue.Low);
+        _gpioController.Write(GpioPin, PinValue.Low);
         IsFanRunning = false;
 
-        _logger.LogInformation("Fan turned off");
+        LogFanTurnedOff();
     }
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Initial value: {InitialValue}")]
+    public void Dispose()
+    {
+        _gpioPin.Dispose();
+        _gpioController.Dispose();
+    }
+
+    [LoggerMessage(Level = LogLevel.Information, SkipEnabledCheck = true, Message = "Initial value: {InitialValue}")]
     private partial void LogInitialValue(bool initialValue);
+
+    [LoggerMessage(Level = LogLevel.Information, SkipEnabledCheck = true, Message = "Fan turned on")]
+    private partial void LogFanTurnedOn();
+
+    [LoggerMessage(Level = LogLevel.Information, SkipEnabledCheck = true, Message = "Fan turned off")]
+    private partial void LogFanTurnedOff();
 }

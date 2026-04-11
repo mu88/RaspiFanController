@@ -2,40 +2,51 @@
 
 namespace RaspiFanController.Logic;
 
-public partial class RaspiTemperatureController(
+internal partial class RaspiTemperatureController(
     ITemperatureProvider temperatureProvider,
     IFanController fanController,
-    ITaskCancellationHelper taskCancellationHelper,
     TimeProvider timeProvider,
     ILogger<RaspiTemperatureController> logger,
-    IOptionsMonitor<AppSettings> settings)
+    IOptions<AppSettings> settings) : IRaspiTemperatureController
 {
+    private double _currentTemperature;
+
+    // Stryker disable all : don't mutate default initialization
+    private string _unit = string.Empty;
+
+    // Stryker restore all
     public bool IsPlatformSupported => temperatureProvider.IsPlatformSupported();
 
-    public int RefreshMilliseconds { get; } = settings.CurrentValue.RefreshMilliseconds;
+    public int RefreshMilliseconds { get; } = settings.Value.RefreshMilliseconds;
 
     public bool IsFanRunning => fanController.IsFanRunning;
 
     public TimeSpan Uptime => timeProvider.GetUtcNow() - StartTime;
 
-    public int LowerTemperatureThreshold { get; private set; } = settings.CurrentValue.LowerTemperatureThreshold;
+    public int LowerTemperatureThreshold { get; private set; } = settings.Value.LowerTemperatureThreshold;
 
-    public double CurrentTemperature { get; private set; }
+    public double CurrentTemperature
+    {
+        get => Volatile.Read(ref _currentTemperature);
+        private set => Volatile.Write(ref _currentTemperature, value);
+    }
 
-    // Stryker disable all : don't mutate default initialization
-    public string Unit { get; private set; } = string.Empty;
+    public string Unit
+    {
+        get => Volatile.Read(ref _unit);
+        private set => Volatile.Write(ref _unit, value);
+    }
 
-    // Stryker restore all
     public RegulationMode RegulationMode { get; private set; } = RegulationMode.Automatic;
 
-    public int UpperTemperatureThreshold { get; private set; } = settings.CurrentValue.UpperTemperatureThreshold;
+    public int UpperTemperatureThreshold { get; private set; } = settings.Value.UpperTemperatureThreshold;
 
     private DateTimeOffset StartTime { get; } = timeProvider.GetUtcNow();
 
     public void SetAutomaticTemperatureRegulation()
     {
         RegulationMode = RegulationMode.Automatic;
-        logger.LogInformation("Set automatic mode");
+        LogSetAutomaticMode();
     }
 
     public void SetManualTemperatureRegulation(bool fanShouldRun)
@@ -45,12 +56,16 @@ public partial class RaspiTemperatureController(
         if (fanShouldRun && !IsFanRunning)
         {
             fanController.TurnFanOn();
-            logger.LogDebug("Set manual mode and turned on");
+            LogSetManualModeTurnedOn();
         }
         else if (!fanShouldRun && IsFanRunning)
         {
             fanController.TurnFanOff();
-            logger.LogDebug("Set manual mode and turned off");
+            LogSetManualModeTurnedOff();
+        }
+        else
+        {
+            LogSetManualModeUnchanged();
         }
     }
 
@@ -62,14 +77,14 @@ public partial class RaspiTemperatureController(
         }
 
         UpperTemperatureThreshold = upperTemperatureThreshold;
-        logger.LogInformation("Set upper threshold");
+        LogSetUpperThreshold();
 
         return true;
     }
 
-    public async Task StartTemperatureMeasurementAsync()
+    public async Task StartTemperatureMeasurementAsync(CancellationToken cancellationToken)
     {
-        while (!taskCancellationHelper.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             (CurrentTemperature, Unit) = temperatureProvider.GetTemperature();
             LogCurrentTemperature(CurrentTemperature, Unit);
@@ -79,17 +94,18 @@ public partial class RaspiTemperatureController(
                 && !fanController.IsFanRunning)
             {
                 fanController.TurnFanOn();
-                logger.LogDebug("Turned fan on in automatic mode");
+                LogTurnedFanOnInAutomaticMode();
             }
             else if (RegulationMode == RegulationMode.Automatic
                      && CurrentTemperature < LowerTemperatureThreshold
                      && IsFanRunning)
             {
                 fanController.TurnFanOff();
-                logger.LogDebug("Turned fan off in automatic mode");
+                LogTurnedFanOffInAutomaticMode();
             }
 
-            await Task.Delay(TimeSpan.FromMilliseconds(RefreshMilliseconds), timeProvider, taskCancellationHelper.CancellationToken);
+            await Task.Delay(TimeSpan.FromMilliseconds(RefreshMilliseconds), timeProvider, cancellationToken)
+                .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
         }
     }
 
@@ -101,11 +117,35 @@ public partial class RaspiTemperatureController(
         }
 
         LowerTemperatureThreshold = lowerTemperatureThreshold;
-        logger.LogInformation("Set lower threshold");
+        LogSetLowerThreshold();
 
         return true;
     }
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "Current: {CurrentTemperature}°{Unit}")]
     private partial void LogCurrentTemperature(double currentTemperature, string unit);
+
+    [LoggerMessage(Level = LogLevel.Information, SkipEnabledCheck = true, Message = "Set automatic mode")]
+    private partial void LogSetAutomaticMode();
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Set manual mode and turned on")]
+    private partial void LogSetManualModeTurnedOn();
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Set manual mode and turned off")]
+    private partial void LogSetManualModeTurnedOff();
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Set manual mode, fan state unchanged")]
+    private partial void LogSetManualModeUnchanged();
+
+    [LoggerMessage(Level = LogLevel.Information, SkipEnabledCheck = true, Message = "Set upper threshold")]
+    private partial void LogSetUpperThreshold();
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Turned fan on in automatic mode")]
+    private partial void LogTurnedFanOnInAutomaticMode();
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Turned fan off in automatic mode")]
+    private partial void LogTurnedFanOffInAutomaticMode();
+
+    [LoggerMessage(Level = LogLevel.Information, SkipEnabledCheck = true, Message = "Set lower threshold")]
+    private partial void LogSetLowerThreshold();
 }
