@@ -14,7 +14,7 @@ namespace Tests.Unit.Pages;
 [Category("Unit")]
 public sealed class IndexTests
 {
-    private Bunit.TestContext _ctx = null!;
+    private BunitContext _ctx = null!;
     private IRaspiTemperatureController _controllerMock = null!;
     private FakeTimeProvider _fakeTimeProvider = null!;
     private ILogger<IndexPage> _loggerMock = null!;
@@ -22,7 +22,7 @@ public sealed class IndexTests
     [SetUp]
     public void SetUp()
     {
-        _ctx = new Bunit.TestContext();
+        _ctx = new BunitContext();
         _controllerMock = Substitute.For<IRaspiTemperatureController>();
         _controllerMock.RefreshMilliseconds.Returns(60_000);
         _controllerMock.CurrentTemperature.Returns(42.5);
@@ -52,7 +52,7 @@ public sealed class IndexTests
         _controllerMock.RegulationMode.Returns(RegulationMode.Automatic);
 
         // Act
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Assert
         cut.Find("input[name='fanIsRunning'][value='True']").HasAttribute("disabled").Should().BeTrue();
@@ -65,7 +65,7 @@ public sealed class IndexTests
         _controllerMock.RegulationMode.Returns(RegulationMode.Manual);
 
         // Act
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Assert
         cut.Find("input[name='fanIsRunning'][value='True']").HasAttribute("disabled").Should().BeFalse();
@@ -78,7 +78,7 @@ public sealed class IndexTests
         _controllerMock.IsPlatformSupported.Returns(false);
 
         // Act
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Assert
         cut.Find(".alert-danger").TextContent.Should().Contain("not supported");
@@ -88,7 +88,7 @@ public sealed class IndexTests
     public void ModeChanged_ToAutomatic_CallsSetAutomaticTemperatureRegulation()
     {
         // Arrange
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("input[name='mode'][value='Automatic']").Change("Automatic");
@@ -102,7 +102,7 @@ public sealed class IndexTests
     {
         // Arrange
         _controllerMock.IsFanRunning.Returns(false);
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("input[name='mode'][value='Manual']").Change("Manual");
@@ -116,7 +116,7 @@ public sealed class IndexTests
     {
         // Arrange
         _controllerMock.TrySetUpperTemperatureThreshold(55).Returns(true);
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("#upperThreshold").Change("55");
@@ -130,7 +130,7 @@ public sealed class IndexTests
     {
         // Arrange
         _controllerMock.TrySetUpperTemperatureThreshold(Arg.Any<int>()).Returns(false);
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("#upperThreshold").Change("25");
@@ -143,7 +143,7 @@ public sealed class IndexTests
     public void UpperTemperatureThresholdChanged_WithInvalidInput_ShowsErrorMessage()
     {
         // Arrange
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("#upperThreshold").Change("not-a-number");
@@ -157,7 +157,7 @@ public sealed class IndexTests
     {
         // Arrange
         _controllerMock.TrySetLowerTemperatureThreshold(25).Returns(true);
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("#lowerThreshold").Change("25");
@@ -171,7 +171,7 @@ public sealed class IndexTests
     {
         // Arrange
         _controllerMock.TrySetLowerTemperatureThreshold(Arg.Any<int>()).Returns(false);
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("#lowerThreshold").Change("55");
@@ -184,7 +184,7 @@ public sealed class IndexTests
     public void LowerTemperatureThresholdChanged_WithInvalidInput_ShowsErrorMessage()
     {
         // Arrange
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("#lowerThreshold").Change("not-a-number");
@@ -197,7 +197,7 @@ public sealed class IndexTests
     public void FanIsRunningChanged_WithTrueValue_CallsSetManualTemperatureRegulationTrue()
     {
         // Arrange
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("input[name='fanIsRunning'][value='True']").Change("True");
@@ -210,7 +210,7 @@ public sealed class IndexTests
     public void FanIsRunningChanged_WithFalseValue_CallsSetManualTemperatureRegulationFalse()
     {
         // Arrange
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("input[name='fanIsRunning'][value='False']").Change("False");
@@ -223,7 +223,7 @@ public sealed class IndexTests
     public void FanIsRunningChanged_WithInvalidValue_DefaultsToFanOn()
     {
         // Arrange
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
 
         // Act
         cut.Find("input[name='fanIsRunning'][value='True']").Change("invalid-bool");
@@ -236,7 +236,7 @@ public sealed class IndexTests
     public void OnTimerElapsed_WhenTimerFires_ReloadsDataAndReRenders()
     {
         // Arrange
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
         var initialRenderCount = cut.RenderCount;
 
         // Act
@@ -251,7 +251,7 @@ public sealed class IndexTests
     {
         // Arrange
         _loggerMock.IsEnabled(LogLevel.Error).Returns(true);
-        var cut = _ctx.RenderComponent<IndexPage>();
+        var cut = _ctx.Render<IndexPage>();
         var exception = new InvalidOperationException("sensor failure");
         _controllerMock.CurrentTemperature.Returns(_ => throw exception);
 

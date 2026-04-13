@@ -4,11 +4,11 @@
     "net10.0": {
       "Iot.Device.Bindings": {
         "type": "Direct",
-        "requested": "[4.1.0, )",
-        "resolved": "4.1.0",
-        "contentHash": "bDSWfu/o2PME0bZKCe6KHihtlLVbSICjg2lMOqxtaFmgUGHI6KUY4q3wyOVGgTibjHcMKKvGl5MvGUwP4IrM9g==",
+        "requested": "[4.2.0, )",
+        "resolved": "4.2.0",
+        "contentHash": "16bCYTDbagOIg+Qkn8YOQTuP8LoAiKXV44jeLsAk987bXD4vDsababYjnPD0VZjZQXkfsSiJM6+c5yNoRy7TPA==",
         "dependencies": {
-          "System.Device.Gpio": "4.1.0",
+          "System.Device.Gpio": "4.2.0",
           "System.Drawing.Common": "8.0.8",
           "System.IO.Ports": "8.0.0",
           "System.Management": "8.0.0",
@@ -40,9 +40,9 @@
       },
       "System.Device.Gpio": {
         "type": "Direct",
-        "requested": "[4.1.0, )",
-        "resolved": "4.1.0",
-        "contentHash": "Ip7o1kJ8B/UL5+7/21treDxue2/5Is6bfC3KWEBEYX5LH8jvRiypL1Muoe4HdEHa728Ge6t+5PZ7x02ibPp5Jg=="
+        "requested": "[4.2.0, )",
+        "resolved": "4.2.0",
+        "contentHash": "MbacJrE7B+aIIAKO6YFUB9RNHneaobwnw0DhVMGbjGsMN82i0+HYCfSRlkuEbsD4HlzTcIlqIFYfkph3xFq2sQ=="
       },
       "IDisposableAnalyzers": {
         "type": "Transitive",
