@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Bunit" Version="2.6.2" />
+    <PackageVersion Include="Bunit" Version="2.7.2" />
     <PackageVersion Include="CliWrap" Version="3.10.1" />
     <PackageVersion Include="FluentAssertions" Version="8.9.0" />
     <PackageVersion Include="FluentAssertions.Web.v8" Version="1.9.5" />
