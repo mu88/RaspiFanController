@@ -10,11 +10,11 @@ jobs:
   shared_ci_cd:
     permissions:
       attestations: write
-      contents: read
+      contents: write # Needed for dependency submission (SBOM upload)
       id-token: write
       packages: write
 
-    uses: mu88/common/.github/workflows/ci-cd.yml@4e3d5313798009ef14a20532bb590147101941e8 # main
+    uses: mu88/common/.github/workflows/ci-cd.yml@1f11d1740794acc87451af8a923b700b5beb49d8 # main
     with:
       docker-attest-provenance-and-sbom: true
       docker-publish-project: 'RaspiFanController/RaspiFanController.csproj'
@@ -59,7 +59,7 @@ jobs:
           zip -r RaspiFanController.${{ needs.shared_ci_cd.outputs.version }}.zip ./*
 
       - name: Generate SBOM and attest build provenance and SBOM
-        uses: mu88/common/.github/actions/attest-provenance-sbom@4e3d5313798009ef14a20532bb590147101941e8 # main
+        uses: mu88/common/.github/actions/attest-provenance-sbom@1f11d1740794acc87451af8a923b700b5beb49d8 # main
         with:
           is-release: ${{ needs.shared_ci_cd.outputs.is_release }}
           sbom-file: sbom.json
