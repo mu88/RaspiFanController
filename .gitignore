@@ -5,3 +5,7 @@ obj
 *.user
 TestResults
 coverage*.xml
+
+# LibMan-managed client-side libraries (restored via `libman restore` in CI)
+RaspiFanController/wwwroot/css/bootstrap/
+RaspiFanController/wwwroot/css/open-iconic/

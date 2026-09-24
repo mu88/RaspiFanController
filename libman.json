@@ -1,0 +1,36 @@
+{
+  "version": "3.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "library": "bootstrap@4.3.1",
+      "destination": "RaspiFanController/wwwroot/css/bootstrap/",
+      "fileMappings": [
+        {
+          "root": "dist/css",
+          "destination": "RaspiFanController/wwwroot/css/bootstrap/",
+          "files": [
+            "bootstrap.min.css",
+            "bootstrap.min.css.map"
+          ]
+        }
+      ]
+    },
+    {
+      "library": "open-iconic@1.1.1",
+      "destination": "RaspiFanController/wwwroot/css/open-iconic/",
+      "provider": "jsdelivr",
+      "files": [
+        "font/css/open-iconic-bootstrap.min.css",
+        "font/fonts/open-iconic.eot",
+        "font/fonts/open-iconic.otf",
+        "font/fonts/open-iconic.svg",
+        "font/fonts/open-iconic.ttf",
+        "font/fonts/open-iconic.woff",
+        "README.md",
+        "FONT-LICENSE",
+        "ICON-LICENSE"
+      ]
+    }
+  ]
+}
