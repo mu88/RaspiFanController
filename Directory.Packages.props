@@ -4,13 +4,13 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Bunit" Version="2.9.0" />
+    <PackageVersion Include="Bunit" Version="2.11.3" />
     <PackageVersion Include="CliWrap" Version="3.10.5" />
-    <PackageVersion Include="FluentAssertions" Version="8.10.0" />
+    <PackageVersion Include="FluentAssertions" Version="8.11.0" />
     <PackageVersion Include="FluentAssertions.Web.v8" Version="2.0.3" />
     <PackageVersion Include="Iot.Device.Bindings" Version="4.2.0" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.5.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
     <PackageVersion Include="mu88.Shared" Version="8.4.0" />
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
     <PackageVersion Include="nunit" Version="4.6.1" />
