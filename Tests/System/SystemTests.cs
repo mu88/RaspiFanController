@@ -1,114 +1,45 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using CliWrap;
-using CliWrap.Buffered;
-using Docker.DotNet;
-using Docker.DotNet.Models;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
 using FluentAssertions;
+using mu88.Shared.Testing.Docker;
+using mu88.Shared.Testing.SystemTests;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 
 namespace Tests.System;
 
 [Category("System")]
-public class SystemTests
+public class SystemTests : SystemTestsBase
 {
-    private CancellationTokenSource? _cancellationTokenSource;
-    private CancellationToken _cancellationToken;
-    private DockerClient? _dockerClient;
-    private IContainer? _container;
-
-    [SetUp]
-    public void Setup()
-    {
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
-        _cancellationToken = _cancellationTokenSource.Token;
-        _dockerClient = new DockerClientBuilder().Build();
-    }
-
-    [TearDown]
-    public async Task Teardown()
-    {
-        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")))
-        {
-            return; // no need to clean up on GitHub Actions runners
-        }
-
-        // If the test passed, clean up the container and image. Otherwise, keep them for investigation.
-        if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Passed && _container is not null && _dockerClient is not null)
-        {
-            await _container.StopAsync(_cancellationToken);
-            await _container.DisposeAsync();
-            await _dockerClient.Images.DeleteImageAsync(_container.Image.FullName, new ImageDeleteParameters { Force = true }, _cancellationToken);
-        }
-
-        _dockerClient?.Dispose();
-        _cancellationTokenSource?.Dispose();
-    }
+    protected override string SubPath => "/cool";
 
     [Test]
-    [SuppressMessage("IDisposableAnalyzers.Correctness", "IDISP014:Use a single instance of HttpClient", Justification = "Just a single test, not a perf issue")]
     public async Task AppRunningInDocker_ShouldBeHealthy()
     {
         // Arrange
-        var containerImageTag = GenerateContainerImageTag();
-        await BuildDockerImageOfAppAsync(containerImageTag, _cancellationToken);
-        _container = await StartAppInContainersAsync(containerImageTag, _cancellationToken);
-        var httpClient = new HttpClient { BaseAddress = GetAppBaseAddress(_container) };
+        var containerImageTag = DockerImageBuilder.GenerateContainerImageTag();
+        await BuildDockerImageOfAppAsync(containerImageTag, CancellationToken);
+        Container = await StartAppInContainerAsync(containerImageTag, CancellationToken);
 
-        // Act
-        var healthCheckResponse = await httpClient.GetAsync("healthz", _cancellationToken);
-        var appResponse = await httpClient.GetAsync("/", _cancellationToken);
-        var healthCheckToolResult = await _container.ExecAsync(["dotnet", "/app/mu88.HealthCheck.dll", "http://127.0.0.1:8080/cool/healthz"], _cancellationToken);
-
-        // Assert
-        await LogsShouldNotContainWarningsAsync(_container, _cancellationToken);
-        await HealthCheckShouldBeHealthyAsync(healthCheckResponse, _cancellationToken);
-        await AppShouldRunAsync(appResponse, _cancellationToken);
-        healthCheckToolResult.ExitCode.Should().Be(0);
+        // Act & Assert
+        await LogsShouldNotContainWarningsAsync(CancellationToken);
+        await HealthCheckShouldSucceedAsync(CancellationToken);
+        await AppShouldRunAsync(CancellationToken, "Raspi Fan Controller");
     }
 
     private static async Task BuildDockerImageOfAppAsync(string containerImageTag, CancellationToken cancellationToken)
     {
         var rootDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.Parent ?? throw new NullReferenceException();
         var projectFile = Path.Join(rootDirectory.FullName, "RaspiFanController", "RaspiFanController.csproj");
-        var buildResult = await Cli.Wrap("dotnet")
-            .WithArguments([
-                "publish",
-                $"{projectFile}",
-                "--os",
-                "linux",
-                "--arch",
-                "amd64",
-                "/t:PublishContainersForMultipleFamilies",
-                $"/p:ReleaseVersion={containerImageTag}",
-                "/p:IsRelease=false",
-                "/p:DoNotApplyGitHubScope=true"
-            ])
-            .ExecuteBufferedAsync(cancellationToken);
-        Console.WriteLine(buildResult.StandardOutput);
-        buildResult.IsSuccess.Should().BeTrue();
+        await DockerImageBuilder.BuildAsync(projectFile, containerImageTag, "raspifancontroller", rootDirectory.FullName, cancellationToken);
     }
 
-    private static async Task<IContainer> StartAppInContainersAsync(string containerImageTag, CancellationToken cancellationToken)
+    private static async Task<IContainer> StartAppInContainerAsync(string containerImageTag, CancellationToken cancellationToken)
     {
-        Console.WriteLine("Building and starting network");
         var network = new NetworkBuilder().Build();
         await network.CreateAsync(cancellationToken);
-        Console.WriteLine("Network started");
 
-        Console.WriteLine("Building and starting app container");
-        var container = BuildAppContainer(network, containerImageTag);
-        await container.StartAsync(cancellationToken);
-        Console.WriteLine("App container started");
-
-        return container;
-    }
-
-    private static IContainer BuildAppContainer(INetwork network, string containerImageTag)
-        => new ContainerBuilder($"raspifancontroller:{containerImageTag}-chiseled")
+        var container = new ContainerBuilder($"raspifancontroller:{containerImageTag}-chiseled")
             .WithNetwork(network)
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development") // this enables the faked temperature and fan controller as we're not on a real Raspi
             .WithPortBinding(8080, true)
@@ -116,29 +47,7 @@ public class SystemTests
                 .UntilMessageIsLogged("Content root path: /app",
                     strategy => strategy.WithTimeout(TimeSpan.FromSeconds(30)))) // as it's a chiseled container, waiting for the port does not work
             .Build();
-
-    private static Uri GetAppBaseAddress(IContainer container) => new($"http://{container.Hostname}:{container.GetMappedPublicPort(8080)}/cool");
-
-    private static async Task AppShouldRunAsync(HttpResponseMessage appResponse, CancellationToken cancellationToken)
-    {
-        appResponse.Should().Be200Ok();
-        (await appResponse.Content.ReadAsStringAsync(cancellationToken)).Should().Contain("<title>Raspi Fan Controller</title>");
+        await container.StartAsync(cancellationToken);
+        return container;
     }
-
-    private static async Task HealthCheckShouldBeHealthyAsync(HttpResponseMessage healthCheckResponse, CancellationToken cancellationToken)
-    {
-        healthCheckResponse.Should().Be200Ok();
-        (await healthCheckResponse.Content.ReadAsStringAsync(cancellationToken)).Should().Be("Healthy");
-    }
-
-    private static async Task LogsShouldNotContainWarningsAsync(IContainer container, CancellationToken cancellationToken)
-    {
-        (string Stdout, string Stderr) logValues = await container.GetLogsAsync(ct: cancellationToken);
-        Console.WriteLine($"Stderr:{Environment.NewLine}{logValues.Stderr}");
-        Console.WriteLine($"Stdout:{Environment.NewLine}{logValues.Stdout}");
-        logValues.Stdout.Should().NotContain("warn:");
-    }
-
-    [SuppressMessage("Design", "MA0076:Do not use implicit culture-sensitive ToString in interpolated strings", Justification = "Okay for me")]
-    private static string GenerateContainerImageTag() => $"0.0.0-system-test-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
 }
