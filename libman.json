@@ -3,7 +3,7 @@
   "defaultProvider": "jsdelivr",
   "libraries": [
     {
-      "library": "bootstrap@4.3.1",
+      "library": "bootstrap@5.3.8",
       "destination": "RaspiFanController/wwwroot/css/bootstrap/",
       "fileMappings": [
         {
