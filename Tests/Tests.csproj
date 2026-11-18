@@ -9,6 +9,7 @@
     <PackageReference Include="CliWrap" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="FluentAssertions.Web.v8" />
+    <!-- TEMP-PIN: GHSA-6527-9fp8-r4x6 -->
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
