@@ -9,12 +9,14 @@
     <PackageVersion Include="FluentAssertions" Version="8.11.0" />
     <PackageVersion Include="FluentAssertions.Web.v8" Version="3.0.0" />
     <PackageVersion Include="Iot.Device.Bindings" Version="4.2.0" />
-    <!-- TEMP-PIN: GHSA-6527-9fp8-r4x6. Remove this central pin and the direct Tests reference when FluentAssertions.Web.v8/HttpMessageFormatter resolve Microsoft.AspNetCore.WebUtilities to version 2.3.14 or newer without an override. -->
-    <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="2.3.14" />
-    <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.5.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="11.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
-    <PackageVersion Include="mu88.Shared" Version="8.4.0" />
-    <PackageVersion Include="mu88.Shared.Testing" Version="8.6.1" />
+    <PackageVersion Include="mu88.Shared" Version="9.0.1" />
+    <PackageVersion Include="mu88.Shared.Testing" Version="9.0.1" />
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
     <PackageVersion Include="nunit" Version="5.0.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="6.3.0" />
