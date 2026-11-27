@@ -17,6 +17,9 @@
     ],
     "mutate": [
       "!**/Program.cs"
-    ]
+    ],
+    "thresholds": {
+      "break": 1
+    }
   }
 }
